@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>ZIM - Code Creativity</title>
+
+    <!-- zimjs.com - JavaScript Canvas Framework -->
+    <script type=module>
+
+import zim from "https://zimjs.org/cdn/02/zim";
+
+let count = 0;
+let step = 110;
+let size = step;  //button size
+let Rout = size/2;
+let Rin = Rout*0.7;
+let Rim = Rout - Rin;
+let buttonY = 0;
+let soundsWritten = [];
+let noteCentres = [];
+let noteNum = [];
+let noteTimes = [];
+let audios = [];
+let duration = 6;
+let colourBut = [red, orange, yellow, green, blue, purple, pink];
+let coloursIn = [white, orange, white, green, white, white, pink, red, orange, yellow, green, blue, purple];
+let coloursOut = [red, red, yellow, yellow, blue, purple, purple, purple, purple, purple, purple, purple, purple];
+let solfa = ['Do', 'Re', 'Mi', 'Fa', 'So', 'La', 'Ti'];
+let baseline = 600;
+
+// class Doughnut {
+//     Ro;
+//     Ri;
+//     colourO;
+//     colourI;
+//     soundfile;
+//     toneNum;
+
+//     constructor() {
+//         this.toneNum = noteNum;
+//         this.soundfile = this.toneNum + '-[AudioTrimmer.com].wav';
+//         var audio = new Audio(soundfile);
+//         //audio.play();
+        
+//         soundsWritten.push(
+//             new Circle(this.Ro, this.colourO).pos(count,500).tap(()=>{
+//                 audio.play();
+//             })
+//         );
+//         noteCentres.push(
+//             new Circle(Rin, this.colourIn).pos(count-Rin+Rout, 500+Rim).tap(()=>{
+//                 audio.play();
+//             })
+//         );
+//     }
+// }
+
+// class NoteButton {
+//     //sizeB;
+//     buttNum;
+//     audiof;
+//     label;
+//     buttSize;
+//     symbolSize;
+//     colour;
+//     colourIn;
+//     colourOut;
+    
+
+//     constructor() {
+//         //this.sizeB = size;
+//         //this.audiof = 'C-[AudioTrimmer.com].wav';
+
+//         var arrayNum = this.buttNum - 1;
+
+//         this.buttSize = buttonY;
+//         this.label = solfa[arrayNum];
+//         this.colour = colourBut[arrayNum];
+//         this.colourIn = coloursIn[arrayNum];
+//         this.colourOut = coloursOut[arrayNum];
+//     }
+//     do() {
+//         new Button(size,size,"Do",red).pos(0,buttonY).tap(()=>{
+//             if(event.ctrlKey){
+//                 count -= step;
+//             }
+//             addNoteCentre();
+//             addSoundWritten();
+//         }
+//         var audio = new Audio(audiof);
+//         audio.play();
+//         noteNum.push(buttNum);
+//         audios.push(audiof);
+        
+//         soundsWritten.push(
+//             new Circle(Rout, this.colourOut).pos(count,500).tap(()=>{
+//                 audio.play();
+//             })
+//         );
+
+//         noteCentres.push(
+//             new Circle(Rin, this.colourIn).pos(count-Rin+Rout, 500+Rim).tap(()=>{
+//                 audio.play();
+//             })
+//         );
+                   
+//         count += step;
+
+//     }
+
+//     addNoteCentre() {
+//         soundsWritten.push(
+//             new Circle(Rout, this.colour).pos(count,500).tap(()=>{
+//                 audio.play();
+//             })
+//         );
+//     }
+
+//     addSoundWritten() {
+//         noteCentres.push(
+//             new Circle(Rin, this.colourIn).pos(count-Rin+Rout, 500+Rim).tap(()=>{
+//                 //var audio = new Audio('C-[AudioTrimmer.com].wav');
+//                 audio.play();
+//             })
+//         );
+//     }
+// }
+
+class Symbol{
+    // size;
+    // audio[];
+    // position;
+
+    // constructor () {
+    //     size = 100;
+    //     tones = [1, 3, 5];
+    //     position = [100;200];
+    //     if (noteTone == 1){
+    //         this.audio = new Audio('C-[AudioTrimmer.com].wav');
+    //     }
+    //     if (noteTone == 2){
+    //         var audio = new Audio('D-[AudioTrimmer.com].wav');
+    //     }
+    //     if (noteTone == 3){
+    //         var audio = new Audio('E-[AudioTrimmer.com].wav');
+    //     }
+    //     if (noteTone == 4){
+    //         var audio = new Audio('F-[AudioTrimmer.com].wav');
+    //     }
+    //     if (noteTone == 5){
+    //         var audio = new Audio('G-[AudioTrimmer.com].wav');
+    //     }
+    //     if (noteTone == 6){
+    //         var audio = new Audio('A-[AudioTrimmer.com].wav');
+    //     }
+    //     if (noteTone == 7){
+    //         var audio = new Audio('B-[AudioTrimmer.com].wav');
+    //     }
+    //     if (noteTone == 8){
+    //         var audio = new Audio('C1-[AudioTrimmer.com].wav');
+    //     }
+    //     if (noteTone == 9){
+    //         var audio = new Audio('D1-[AudioTrimmer.com].wav');
+    //     }
+    //     if (noteTone == 10){
+    //         var audio = new Audio('E1-[AudioTrimmer.com].wav');
+    //     }
+    // }
+
+    // play(){
+    //     audio.play();
+    // }
+}
+
+class Block extends Symbol{
+    constructor (count) {
+        super();
+
+        this.sizeB = 100;
+        this.soundB = 'C major-[AudioTrimmer.com].wav';
+
+    }
+    
+}
+
+class NoteButton {
+
+}
+
+class Diagram {
+
+}
+
+function keydown_space(event) {
+soundsWritten.push(' ');
+noteNum.push(0);
+count += step;
+}
+function keydwon_backspace(event) {
+    count -= step;
+    const lastItem = soundsWritten[soundsWritten.length - 1]
+    const lastCentre = noteCentres[noteCentres.length - 1]
+    lastItem.alp(0);
+    lastCentre.alp(0);
+    soundsWritten.pop();
+    noteCentres.pop();
+    noteNum.pop();
+    noteTimes.pop();
+    //zog(soundsWritten.length);F
+}
+
+// See Docs under Frame for FIT, FILL, FULL, and TAG
+new Frame(FIT, 1024, 768, light, dark, ready);
+  
+function ready() {
+    document.addEventListener('keydown', function (event) {
+
+        console.log(`Keydown event fired ${event.key}`);
+
+        switch (event.code) {
+            case 'Space':
+                keydown_space(event);
+                break;
+            case 'Backspace':
+                keydwon_backspace();
+                break;
+            // default:
+            // break;
+        }
+        });
+
+    // document.addEventListener('keydown',event => {
+    // if (event.code === 'Space') {
+    //     soundsWritten.push(' ');
+    //     noteNum.push(0);
+    //     count += step;
+    //     }
+    // })
+
+    // document.addEventListener('keydown',event => {
+    // if (event.code === 'Backspace') {
+    //     count -= step;
+    //     const lastItem = soundsWritten[soundsWritten.length - 1]
+    //     const lastCentre = noteCentres[noteCentres.length - 1]
+    //     lastItem.alp(0);
+    //     lastCentre.alp(0);
+    //     soundsWritten.pop();
+    //     noteCentres.pop();
+    //     noteNum.pop();
+        
+    //     }
+    // })
+
+    // const soundsWritten = {
+    //     letter : null
+    //     soundfile: null
+    //     play : function (){
+    //         var audio = new Audio(soundfile);
+    //         audio.play();
+    //     }
+    //     colorR : null
+    //     positionX : null
+    //     positionY : null
+    // } 
+
+    let counting = 0;
+
+    let iCount = 0;
+
+    new Button(200,100,"Play",black).pos(400,667).tap(()=>{
+        let j = 0;
+
+        // for (let pos = 0; pos < noteNum.length; pos++) {
+        //     const noteTone = noteNum[pos];
+
+        for (let pos = 0; pos < noteTimes.length; pos++) {
+            const noteTone = noteNum[pos];
+            const noteTime = noteTimes[pos]
+
+        // for (let stepNum = 0; stepNum < (count/step); stepNum++) {
+        //    for (let k = 0; k < noteNum.length; k++){
+                
+        //     var steps = (soundsWritten[k].x)/step;
+           
+        //     if (steps == stepNum) {
+
+        
+        
+        setTimeout(() => {
+            iCount++;
+            console.log(`Ran Interval ${iCount}`);
+            
+            
+            if (noteTone == 1){
+                 var audio = new Audio('C-[AudioTrimmer.com].wav');
+                 audio.play();
+                 }
+            if (noteTone == 2){
+                var audio = new Audio('D-[AudioTrimmer.com].wav');
+                audio.play(); 
+            }
+            if (noteTone == 3){
+                var audio = new Audio('E-[AudioTrimmer.com].wav');
+                audio.play(); 
+            }
+            if (noteTone == 4){
+                var audio = new Audio('F-[AudioTrimmer.com].wav');
+                audio.play(); 
+            }
+            if (noteTone == 5){
+                var audio = new Audio('G-[AudioTrimmer.com].wav');
+                audio.play(); 
+            }
+            if (noteTone == 6){
+                var audio = new Audio('A-[AudioTrimmer.com].wav');
+                audio.play(); 
+            }
+            if (noteTone == 7){
+                var audio = new Audio('B-[AudioTrimmer.com].wav');
+                audio.play(); 
+            }
+            if (noteTone == 8){
+                var audio = new Audio('C1-[AudioTrimmer.com].wav');
+                audio.play(); 
+            }
+            if (noteTone == 9){
+                var audio = new Audio('D1-[AudioTrimmer.com].wav');
+                audio.play(); 
+            }
+            if (noteTone == 10){
+                var audio = new Audio('E1-[AudioTrimmer.com].wav');
+                audio.play();
+            } 
+            
+        // }, duration * pos);
+        }, noteTime*duration); 
+
+    //}}
+
+}});
+
+
+
+
+
+    //create red button
+    new Button(size,size,"Do",red).pos(0,buttonY).tap(()=>{
+        if(event.ctrlKey){
+            count -= step;
+        }
+
+        var audio = new Audio('C-[AudioTrimmer.com].wav');
+        audio.play();
+        noteNum.push(1);
+        noteTimes.push(count);
+        audios.push("'C-[AudioTrimmer.com].wav'");
+
+        soundsWritten.push(
+            new Circle(Rout, red).pos(count,baseline).tap(()=>{
+                var audio = new Audio('C-[AudioTrimmer.com].wav');
+                audio.play();
+            })
+            );
+
+        noteCentres.push(
+            new Circle(Rin, white).pos(count+Rim, baseline+Rim).tap(()=>{
+                var audio = new Audio('C-[AudioTrimmer.com].wav');
+                audio.play();
+            })
+        );
+                   
+        count += step;
+        
+    });
+
+    //Create orange button that plays the sound when pressed and creates a new note symbol on the canvas
+    new Button(size,size,"Re",orange).pos(size*1,buttonY).tap(()=>{
+
+        if(event.ctrlKey){
+            count -= step;
+        }
+        
+        //play the sound when the button is pressed
+         var audio = new Audio('D-[AudioTrimmer.com].wav');
+         audio.play();
+
+         //register tone 2
+         noteNum.push(2);
+         noteTimes.push(count);
+         audios.push("'D-[AudioTrimmer.com].wav'");
+
+        //play the sound when the outer ring is pressed 
+        soundsWritten.push(
+         new Circle(Rout,red).pos(count, baseline - Rout).tap(()=>{
+            var audio = new Audio('D-[AudioTrimmer.com].wav');
+            audio.play();
+         })
+        );
+
+         //play the sound when the inner ring is pressed or leave out if it is an open string
+         noteCentres.push(
+           new Circle(Rin,orange).pos(count + Rim, baseline + Rim - Rout).tap(()=>{
+                var audio = new Audio('D-[AudioTrimmer.com].wav');
+                audio.play();
+           })
+         );
+         count += step;
+    });
+
+    //Create yellow button that plays the sound when pressed and creates a new note symbol on the canvas
+    const buttonMi = new Button(size,size,"Mi",yellow).pos(size*2,buttonY).tap(()=>{
+
+        if(event.ctrlKey){
+            count -= step;
+        }
+        
+        //play the sound when the button is pressed
+         var audio = new Audio('E-[AudioTrimmer.com].wav');
+         audio.play();
+         noteNum.push(3);
+         noteTimes.push(count);
+        //zog(noteNum);
+        //play the sound when the outer ring is pressed 
+        soundsWritten.push(
+         new Circle(Rout,yellow).pos(count, baseline-2*Rout).tap(()=>{
+            var audio = new Audio('E-[AudioTrimmer.com].wav');
+            audio.play();
+         })
+        );
+
+         //play the sound when the inner ring is pressed or leave out if it is an open string
+         noteCentres.push(
+         new Circle(Rin,white).pos(count+Rim, baseline-2*Rout+Rim).tap(()=>{
+            // var audio = new Audio('D-[AudioTrimmer.com].wav');
+            // audio.play();
+         })
+         );
+         count += step;
+    });
+
+    //Create green button that plays the sound when pressed and creates a new note symbol on the canvas
+    new Button(size,size,"Fa",green).pos(size*3,buttonY).tap(()=>{
+
+        if(event.ctrlKey){
+            count -= step;
+        }
+        
+        //play the sound when the button is pressed
+         var audio = new Audio('F-[AudioTrimmer.com].wav');
+         audio.play();
+         noteNum.push(4);
+         noteTimes.push(count);
+
+        //play the sound when the outer ring is pressed 
+        soundsWritten.push(
+         new Circle(Rout,yellow).pos(count, baseline-(3)*Rout).tap(()=>{
+            var audio = new Audio('F-[AudioTrimmer.com].wav');
+            audio.play();
+         })
+        );
+
+         //play the sound when the inner ring is pressed or leave out if it is an open string
+         noteCentres.push(
+         new Circle(Rin,green).pos(count+Rim, baseline-3*Rout+Rim).tap(()=>{
+            var audio = new Audio('F-[AudioTrimmer.com].wav');
+            audio.play();
+         })
+         );
+
+         count += step;
+    });
+
+    //Create blue button that plays the sound when pressed and creates a new note symbol on the canvas
+    new Button(size,size,"So",blue).pos(size*4,buttonY).tap(()=>{
+
+        if(event.ctrlKey){
+            count -= step;
+        }
+        
+        //play the sound when the button is pressed
+         var audio = new Audio('G-[AudioTrimmer.com].wav');
+         audio.play();
+         noteNum.push(5);
+         noteTimes.push(count);
+
+        //play the sound when the outer ring is pressed
+        soundsWritten.push( 
+         new Circle(Rout,blue).pos(count, baseline-4*Rout).tap(()=>{
+            var audio = new Audio('G-[AudioTrimmer.com].wav');
+            audio.play();
+         })
+        );
+
+         //play the sound when the inner ring is pressed or leave out if it is an open string
+         noteCentres.push(
+         new Circle(Rin,white).pos(count+Rim, baseline-4*Rout+Rim).tap(()=>{
+            var audio = new Audio('G-[AudioTrimmer.com].wav');
+            audio.play();
+         })
+         );
+         count += step;
+    });
+
+    //Create navy button that plays the sound when pressed and creates a new note symbol on the canvas
+    new Button(size,size,"La",purple).pos(size*5,buttonY).tap(()=>{
+
+        if(event.ctrlKey){
+            count -= step;
+        }
+        
+        //play the sound when the button is pressed
+         var audio = new Audio('A-[AudioTrimmer.com].wav');
+         audio.play();
+         noteNum.push(6);
+         noteTimes.push(count);
+
+        //play the sound when the outer ring is pressed
+        soundsWritten.push( 
+         new Circle(Rout,purple).pos(count, baseline-5*Rout).tap(()=>{
+            var audio = new Audio('A-[AudioTrimmer.com].wav');
+            audio.play();
+         })
+        );
+
+         //play the sound when the inner ring is pressed or leave out if it is an open string
+         noteCentres.push(
+         new Circle(Rin,white).pos(count+Rim, baseline-5*Rout+Rim).tap(()=>{
+            var audio = new Audio('A-[AudioTrimmer.com].wav');
+            audio.play();
+         })
+         );
+
+         count += step;
+    });
+
+     //Create pink button that plays the sound when pressed and creates a new note symbol on the canvas
+     new Button(size,size,"Ti",pink).pos(6*size,buttonY).tap(()=>{
+
+        if(event.ctrlKey){
+            count -= step;
+        }
+        
+        //play the sound when the button is pressed
+         var audio = new Audio('B-[AudioTrimmer.com].wav');
+         audio.play();
+         noteNum.push(7);
+         noteTimes.push(count);
+
+        //play the sound when the outer ring is pressed 
+        soundsWritten.push(
+         new Circle(Rout,purple).pos(count, baseline-6*Rout).tap(()=>{
+            var audio = new Audio('B-[AudioTrimmer.com].wav');
+            audio.play();
+         })
+        );
+
+         //play the sound when the inner ring is pressed or leave out if it is an open string
+         noteCentres.push(
+         new Circle(Rin,pink).pos(count+Rim, baseline-6*Rout+Rim).tap(()=>{
+            var audio = new Audio('B-[AudioTrimmer.com].wav');
+            audio.play();
+         })
+         );
+
+         count += step;
+    });
+
+    //Create red button that plays the sound when pressed and creates a new note symbol on the canvas
+    new Button(size,size,"Do",red).pos(7*size,buttonY).tap(()=>{
+
+        if(event.ctrlKey){
+            count -= step;
+        }
+        
+        //play the sound when the button is pressed
+         var audio = new Audio('C1-[AudioTrimmer.com].wav');
+         audio.play();
+         noteNum.push(8);
+         noteTimes.push(count);
+
+        //play the sound when the outer ring is pressed
+        soundsWritten.push( 
+         new Circle(Rout,purple).pos(count, baseline-7*Rout).tap(()=>{
+            var audio = new Audio('C1-[AudioTrimmer.com].wav');
+            audio.play();
+         })
+        );
+
+         //play the sound when the inner ring is pressed or leave out if it is an open string
+         noteCentres.push(
+         new Circle(Rin,red).pos(count+Rim, baseline-7*Rout+Rim).tap(()=>{
+            var audio = new Audio('C1-[AudioTrimmer.com].wav');
+            audio.play();
+         })
+         );
+         count += step;
+    });
+
+    //Create orange button that plays the sound when pressed and creates a new note symbol on the canvas
+    new Button(size,size,"Re",orange).pos(8*size,buttonY).tap(()=>{
+
+        if(event.ctrlKey){
+            count -= step;
+        }
+        
+        //play the sound when the button is pressed
+         var audio = new Audio('D1-[AudioTrimmer.com].wav');
+         audio.play();
+         noteNum.push(9);
+         noteTimes.push(count);
+
+        //play the sound when the outer ring is pressed
+        soundsWritten.push( 
+         new Circle(Rout,purple).pos(count, baseline-8*Rout).tap(()=>{
+            var audio = new Audio('D1-[AudioTrimmer.com].wav');
+            audio.play();
+         })
+        );
+
+         //play the sound when the inner ring is pressed or leave out if it is an open string
+         noteCentres.push(
+         new Circle(Rin,orange).pos(count+Rim, baseline-8*Rout+Rim).tap(()=>{
+            var audio = new Audio('D1-[AudioTrimmer.com].wav');
+            audio.play();
+         })
+         );
+         count += step;
+    });
+
+    //Create yellow button that plays the sound when pressed and creates a new note symbol on the canvas
+    new Button(size,size,"Mi",yellow).pos(9*size,buttonY).tap(()=>{
+        
+        if(event.ctrlKey){
+            count -= step;
+        }
+        
+        //play the sound when the button is pressed
+         var audio = new Audio('E1-[AudioTrimmer.com].wav');
+         audio.play();
+         noteNum.push(10);
+         noteTimes.push(count);
+
+        //play the sound when the outer ring is pressed
+        soundsWritten.push( 
+         new Circle(Rout,purple).pos(count, baseline-9*Rout).tap(()=>{
+            var audio = new Audio('E1-[AudioTrimmer.com].wav');
+            audio.play();
+         })
+        );
+
+         //play the sound when the inner ring is pressed or leave out if it is an open string
+         noteCentres.push(
+         new Circle(Rin,yellow).pos(count+Rim, baseline+Rim-9*Rout).tap(()=>{
+            var audio = new Audio('E1-[AudioTrimmer.com].wav');
+            audio.play();
+         })
+         );
+         count += step;
+    });
+
+
+    //buttonMi.corner = 50;
+    // new Button(50,50,'Mi',yellow).center().pos(200,100).tap(()=>{
+    //     new Button({height:100, width:100, label:null, backgroundColor:yellow, corner:50}).center().pos(300,500).tap(()=>{
+    //         var audio = new Audio('E-[AudioTrimmer.com].wav');
+    //         audio.play();
+    //     });
+    //     new Circle({radius:25, color:white, percent:100}).pos(325,525).tap(e=>{
+    //     });
+
+    //     var audio = new Audio('E-[AudioTrimmer.com].wav');
+    //     audio.play()
+        
+    // });
+
+    // //const button = new Button(100,100,'Fa',green).center().pos(300,100).tap(()=>{
+    // new Button({height:50, width:50, label:'Fa', backgroundColor:green, corner:25}).center().pos(300,100).tap(()=>{
+    //      var audio = new Audio('F-[AudioTrimmer.com].wav');
+    //      audio.play();
+    // });
+
+    // new Button(100,50,'So',blue).center().pos(400,100).tap(()=>{
+    //      var audio = new Audio('G-[AudioTrimmer.com].wav');
+    //      audio.play();
+    //      new Button({height:100, width:100, label:null, backgroundColor:blue, corner:50}).center().pos(400,500).tap(()=>{
+    //         var audio = new Audio('G-[AudioTrimmer.com].wav');
+    //         audio.play();
+    //      });
+    //      new Circle({radius:25, color:white, percent:100}).pos(425,525).tap(e=>{
+    // });
+    // });
+
+
+    
+
+//     new Button(200,60,"CLICK").center().tap(()=>{
+//         //zog("clicking");
+//         var audio = new Audio('https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3');
+//         audio.play();
+//     });
+
+// // OR add custom label (needed to change label color for instance)
+// var label = new Label({
+//    text:"POWER OPTION",
+//    size:40,
+//    backgroundColor:"violet",
+//    bold:true
+// });
+// new Button({
+//    label:label,
+//    width:390,
+//    height:390,
+//    backgroundColor:"purple",
+//    rollBackgroundColor:"MediumOrchid",
+//    borderWidth:8,
+//    borderColor:"violet",
+//    gradient:.3,
+//    corner:195
+// }).center();
+}
+
+</script>
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
+</head>
+
+<body></body>
+
+</html>
