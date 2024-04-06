@@ -19,6 +19,8 @@ let Rim = Rout - Rin;
 let buttonY = 0;
 let soundsWritten = [];
 let noteCentres = [];
+let tabNotation = [];
+let pianodots = [];
 let noteNum = [];
 let noteTimes = [];
 let audios = [];
@@ -27,7 +29,7 @@ let colourBut = [red, orange, yellow, green, blue, purple, pink];
 let coloursIn = [white, orange, white, green, white, white, pink, red, orange, yellow, green, blue, purple];
 let coloursOut = [red, red, yellow, yellow, blue, purple, purple, purple, purple, purple, purple, purple, purple];
 let solfa = ['Do', 'Re', 'Mi', 'Fa', 'So', 'La', 'Ti'];
-let baseline = 600;
+let baseline = 700;
 
 // class Doughnut {
 //     Ro;
@@ -211,7 +213,7 @@ function keydwon_backspace(event) {
 }
 
 // See Docs under Frame for FIT, FILL, FULL, and TAG
-new Frame(FIT, 1024, 768, light, dark, ready);
+new Frame(FIT, 1724, 2268, light, dark, ready);
   
 function ready() {
     document.addEventListener('keydown', function (event) {
@@ -268,7 +270,74 @@ function ready() {
 
     let iCount = 0;
 
-    new Button(200,100,"Play",black).pos(400,667).tap(()=>{
+    new Rectangle(1724, 3, black).loc(0, baseline - Rout);
+    new Rectangle(1724, 3, black).loc(0, baseline - Rout*3);
+    new Rectangle(1724, 3, black).loc(0, baseline - Rout*5);
+    new Rectangle(1724, 3, black).loc(0, baseline - Rout*7);
+    new Rectangle(1724, 3, black).loc(0, baseline - Rout*9);
+
+    new Rectangle(1724, 3, black).loc(0, baseline*1.3 + Rout);
+    new Rectangle(1724, 3, black).loc(0, baseline*1.3 + Rout*3);
+    new Rectangle(1724, 3, black).loc(0, baseline*1.3 + Rout*5);
+    new Rectangle(1724, 3, black).loc(0, baseline*1.3 + Rout*7);
+
+        //Draw piano diagram white notes
+    const pianonote1 = new Rectangle(200,400, white).loc(50, 1400);
+        pianonote1.borderColor = black;
+        pianonote1.borderWidth = 5;
+    const pianonote2 = new Rectangle(200,400, white).loc(250, 1400);
+        pianonote2.borderColor = black;
+        pianonote2.borderWidth = 5;
+    const pianonote3 = new Rectangle(200,400, white).loc(450, 1400);
+        pianonote3.borderColor = black;
+        pianonote3.borderWidth = 5;
+    const pianonote4 = new Rectangle(200,400, white).loc(650, 1400);
+        pianonote4.borderColor = black;
+        pianonote4.borderWidth = 5;
+    const pianonote5 = new Rectangle(200,400, white).loc(850, 1400);
+        pianonote5.borderColor = black;
+        pianonote5.borderWidth = 5;
+    const pianonote6 = new Rectangle(200,400, white).loc(1050, 1400);
+        pianonote6.borderColor = black;
+        pianonote6.borderWidth = 5;
+    const pianonote7 = new Rectangle(200,400, white).loc(1250, 1400);
+        pianonote7.borderColor = black;
+        pianonote7.borderWidth = 5;
+
+    //Black notes on the piano
+    const pianonote8 = new Rectangle(100,250, black).loc(50+150, 1400);
+        pianonote1.borderColor = black;
+        pianonote1.borderWidth = 5;
+    const pianonote9 = new Rectangle(100,250, black).loc(250+150, 1400);
+    const pianonote10 = new Rectangle(100,250, black).loc(650+150, 1400);
+    const pianonote11 = new Rectangle(100,250, black).loc(850+150, 1400);
+    const pianonote12 = new Rectangle(100,250, black).loc(1050+150, 1400);
+
+    //Draw fretboard diagram
+    //Draw 4 strings
+    new Rectangle(600, 3, black).loc(80, 1900);
+    new Rectangle(600, 3, black).loc(80, 2000);
+    new Rectangle(600, 3, black).loc(80, 2100);
+    new Rectangle(600, 3, black).loc(80, 2200);
+
+    //Draw nut on fretboard
+    const nut = new Rectangle(30, 300, white).loc(70, 1900);
+    nut.borderColor = black;
+    nut.borderWidth = 4;
+
+    //Draw frets
+    const fret1 = new Rectangle(10, 300, black).loc(80+150, 1900);
+    //fret1.borderColor = black;
+    //fret1.borderWidth = 2;
+
+    new Rectangle(10, 300, black).loc(80+300, 1900);
+    new Rectangle(10, 300, black).loc(80+450, 1900);
+    new Rectangle(10, 300, black).loc(80+600, 1900);
+    
+
+
+
+    new Button(200,100,"Play",black).pos(400,800).tap(()=>{
         let j = 0;
 
         // for (let pos = 0; pos < noteNum.length; pos++) {
@@ -332,6 +401,18 @@ function ready() {
                 var audio = new Audio('E1-[AudioTrimmer.com].wav');
                 audio.play();
             } 
+            if (noteTone == 11){
+                var audio = new Audio('F1-[AudioTrimmer.com].wav');
+                audio.play();
+            }
+            if (noteTone == 12){
+                var audio = new Audio('G1-[AudioTrimmer.com].wav');
+                audio.play();
+            } 
+            if (noteTone == 13){
+                var audio = new Audio('A1-[AudioTrimmer.com].wav');
+                audio.play();
+            } 
             
         // }, duration * pos);
         }, noteTime*duration); 
@@ -350,26 +431,50 @@ function ready() {
             count -= step;
         }
 
+        //play the sound when the button is pressed
         var audio = new Audio('C-[AudioTrimmer.com].wav');
         audio.play();
+
+        //register tone 1
         noteNum.push(1);
         noteTimes.push(count);
         audios.push("'C-[AudioTrimmer.com].wav'");
 
+        //play the sound when the outer ring is pressed 
         soundsWritten.push(
             new Circle(Rout, red).pos(count,baseline).tap(()=>{
                 var audio = new Audio('C-[AudioTrimmer.com].wav');
                 audio.play();
             })
-            );
+        );
 
+         //play the sound when the inner ring is pressed or leave out if it is an open string
         noteCentres.push(
             new Circle(Rin, white).pos(count+Rim, baseline+Rim).tap(()=>{
                 var audio = new Audio('C-[AudioTrimmer.com].wav');
                 audio.play();
             })
         );
-                   
+
+        //writing the tab notation
+        tabNotation.push(
+            new Button(size,size,"0",red).pos(count, baseline*1.3 + Rout*4).tap(()=>{
+                var audio = new Audio('C-[AudioTrimmer.com].wav');
+                audio.play();
+            })
+        ); 
+        
+        //marking notes on piano
+        pianodots.push(
+            new Circle(Rout, red).pos(100, 1670).tap(()=>{
+                var audio = new Audio('C-[AudioTrimmer.com].wav');
+                audio.play();
+            })
+        );
+
+        //marking the notes on the fretboard
+        new Rectangle(570, 10, red).loc(110, 2100);
+
         count += step;
         
     });
@@ -405,6 +510,25 @@ function ready() {
                 audio.play();
            })
          );
+
+         //writing the tab notation
+        tabNotation.push(
+            new Button(size,size,"2",orange).pos(count, baseline*1.3 + Rout*4).tap(()=>{
+                var audio = new Audio('D-[AudioTrimmer.com].wav');
+                audio.play();
+            })
+        ); 
+
+        //marking notes on piano
+        pianodots.push(
+            new Circle(Rout, orange).pos(300, 1670).tap(()=>{
+                var audio = new Audio('D-[AudioTrimmer.com].wav');
+                audio.play();
+            })
+        );
+
+        //marking the notes on the fretboard
+        new Circle(Rout/2, orange).loc(110+150+50, 2100);
          count += step;
     });
 
@@ -414,13 +538,16 @@ function ready() {
         if(event.ctrlKey){
             count -= step;
         }
+
         
         //play the sound when the button is pressed
          var audio = new Audio('E-[AudioTrimmer.com].wav');
          audio.play();
          noteNum.push(3);
          noteTimes.push(count);
+         audios.push("'E-[AudioTrimmer.com].wav'");
         //zog(noteNum);
+
         //play the sound when the outer ring is pressed 
         soundsWritten.push(
          new Circle(Rout,yellow).pos(count, baseline-2*Rout).tap(()=>{
@@ -432,10 +559,30 @@ function ready() {
          //play the sound when the inner ring is pressed or leave out if it is an open string
          noteCentres.push(
          new Circle(Rin,white).pos(count+Rim, baseline-2*Rout+Rim).tap(()=>{
-            // var audio = new Audio('D-[AudioTrimmer.com].wav');
-            // audio.play();
+             var audio = new Audio('E-[AudioTrimmer.com].wav');
+             audio.play();
          })
          );
+
+         //writing the tab notation
+        tabNotation.push(
+            new Button(size,size,"0",yellow).pos(count, baseline*1.3 + Rout*2).tap(()=>{
+                var audio = new Audio('E-[AudioTrimmer.com].wav');
+                audio.play();
+            })
+        );
+        
+        //marking notes on piano
+        pianodots.push(
+            new Circle(Rout, yellow).pos(500, 1670).tap(()=>{
+                var audio = new Audio('E-[AudioTrimmer.com].wav');
+                audio.play();
+            })
+        );
+
+        //marking the notes on the fretboard
+        new Rectangle(570, 10, yellow).loc(110, 2000);
+    
          count += step;
     });
 
@@ -468,6 +615,25 @@ function ready() {
          })
          );
 
+        //writing the tab notation
+        tabNotation.push(
+            new Button(size,size,"1",green).pos(count, baseline*1.3 + Rout*2).tap(()=>{
+                var audio = new Audio('F-[AudioTrimmer.com].wav');
+                audio.play();
+            })
+        ); 
+
+         //marking notes on piano
+         pianodots.push(
+            new Circle(Rout, green).pos(700, 1670).tap(()=>{
+                var audio = new Audio('F-[AudioTrimmer.com].wav');
+                audio.play();
+            })
+        );
+
+        //marking the notes on the fretboard
+        new Circle(Rout/2, green).loc(110+50, 2000);
+
          count += step;
     });
 
@@ -499,6 +665,26 @@ function ready() {
             audio.play();
          })
          );
+
+        //writing the tab notation
+        tabNotation.push(
+            new Button(size,size,"0",blue).pos(count, baseline*1.3 + Rout*6).tap(()=>{
+                var audio = new Audio('G-[AudioTrimmer.com].wav');
+                audio.play();
+            })
+        ); 
+
+        //marking notes on piano
+        pianodots.push(
+            new Circle(Rout, blue).pos(900, 1670).tap(()=>{
+                var audio = new Audio('G-[AudioTrimmer.com].wav');
+                audio.play();
+            })
+        );
+
+        //marking the notes on the fretboard
+        new Rectangle(570, 10, blue).loc(110, 2200);
+         
          count += step;
     });
 
@@ -530,6 +716,25 @@ function ready() {
             audio.play();
          })
          );
+
+        //writing the tab notation
+        tabNotation.push(
+            new Button(size,size,"0",purple).pos(count, baseline*1.3 + Rout*0).tap(()=>{
+                var audio = new Audio('A-[AudioTrimmer.com].wav');
+                audio.play();
+            })
+        );
+        
+        //marking notes on piano
+        pianodots.push(
+            new Circle(Rout, purple).pos(1100, 1670).tap(()=>{
+                var audio = new Audio('A-[AudioTrimmer.com].wav');
+                audio.play();
+            })
+        );
+
+        //marking the notes on the fretboard
+        new Rectangle(570, 10, purple).loc(110, 1900);
 
          count += step;
     });
@@ -563,6 +768,25 @@ function ready() {
          })
          );
 
+        //writing the tab notation
+        tabNotation.push(
+            new Button(size,size,"2",pink).pos(count, baseline*1.3 + Rout*0).tap(()=>{
+                var audio = new Audio('B-[AudioTrimmer.com].wav');
+                audio.play();
+            })
+        ); 
+
+         //marking notes on piano
+         pianodots.push(
+            new Circle(Rout, pink).pos(1300, 1670).tap(()=>{
+                var audio = new Audio('B-[AudioTrimmer.com].wav');
+                audio.play();
+            })
+        );
+
+        //marking the notes on the fretboard
+        new Circle(Rout/2, pink).loc(110+50+150, 1900);
+
          count += step;
     });
 
@@ -594,6 +818,26 @@ function ready() {
             audio.play();
          })
          );
+
+         //writing the tab notation
+        tabNotation.push(
+            new Button(size,size,"3",red).pos(count, baseline*1.3 + Rout*0).tap(()=>{
+                var audio = new Audio('C1-[AudioTrimmer.com].wav');
+                audio.play();
+            })
+        ); 
+
+         //marking notes on piano
+         pianodots.push(
+            new Circle(Rout, red).pos(1500, 1670).tap(()=>{
+                var audio = new Audio('C1-[AudioTrimmer.com].wav');
+                audio.play();
+            })
+        );
+
+        //marking the notes on the fretboard
+        new Circle(Rout/2, red).loc(110+50+150+150, 1900);
+
          count += step;
     });
 
@@ -625,6 +869,15 @@ function ready() {
             audio.play();
          })
          );
+
+          //writing the tab notation
+        tabNotation.push(
+            new Button(size,size,"5",orange).pos(count, baseline*1.3 + Rout*0).tap(()=>{
+                var audio = new Audio('D1-[AudioTrimmer.com].wav');
+                audio.play();
+            })
+        ); 
+
          count += step;
     });
 
@@ -656,6 +909,131 @@ function ready() {
             audio.play();
          })
          );
+
+          //writing the tab notation
+        tabNotation.push(
+            new Button(size,size,"7",yellow).pos(count, baseline*1.3 + Rout*0).tap(()=>{
+                var audio = new Audio('E1-[AudioTrimmer.com].wav');
+                audio.play();
+            })
+        ); 
+         count += step;
+    });
+
+    //Create green button that plays the sound when pressed and creates a new note symbol on the canvas
+    new Button(size,size,"Fa",green).pos(10*size,buttonY).tap(()=>{
+        
+        if(event.ctrlKey){
+            count -= step;
+        }
+        
+        //play the sound when the button is pressed
+         var audio = new Audio('F1-[AudioTrimmer.com].wav');
+         audio.play();
+         noteNum.push(11);
+         noteTimes.push(count);
+
+        //play the sound when the outer ring is pressed
+        soundsWritten.push( 
+         new Circle(Rout,purple).pos(count, baseline-10*Rout).tap(()=>{
+            var audio = new Audio('F1-[AudioTrimmer.com].wav');
+            audio.play();
+         })
+        );
+
+         //play the sound when the inner ring is pressed or leave out if it is an open string
+         noteCentres.push(
+         new Circle(Rin,green).pos(count+Rim, baseline+Rim-10*Rout).tap(()=>{
+            var audio = new Audio('F1-[AudioTrimmer.com].wav');
+            audio.play();
+         })
+         );
+
+          //writing the tab notation
+        tabNotation.push(
+            new Button(size,size,"8",green).pos(count, baseline*1.3 + Rout*0).tap(()=>{
+                var audio = new Audio('F1-[AudioTrimmer.com].wav');
+                audio.play();
+            })
+        ); 
+         count += step;
+    });
+
+    //Create green button that plays the sound when pressed and creates a new note symbol on the canvas
+    new Button(size,size,"So",blue).pos(11*size,buttonY).tap(()=>{
+        
+        if(event.ctrlKey){
+            count -= step;
+        }
+        
+        //play the sound when the button is pressed
+         var audio = new Audio('G1-[AudioTrimmer.com].wav');
+         audio.play();
+         noteNum.push(12);
+         noteTimes.push(count);
+
+        //play the sound when the outer ring is pressed
+        soundsWritten.push( 
+         new Circle(Rout,purple).pos(count, baseline-11*Rout).tap(()=>{
+            var audio = new Audio('G1-[AudioTrimmer.com].wav');
+            audio.play();
+         })
+        );
+
+         //play the sound when the inner ring is pressed or leave out if it is an open string
+         noteCentres.push(
+         new Circle(Rin,blue).pos(count+Rim, baseline+Rim-11*Rout).tap(()=>{
+            var audio = new Audio('G1-[AudioTrimmer.com].wav');
+            audio.play();
+         })
+         );
+
+        //writing the tab notation
+        tabNotation.push(
+            new Button(size,size,"10",blue).pos(count, baseline*1.3 + Rout*0).tap(()=>{
+                var audio = new Audio('G1-[AudioTrimmer.com].wav');
+                audio.play();
+            })
+        ); 
+         count += step;
+    });
+
+    //Create green button that plays the sound when pressed and creates a new note symbol on the canvas
+    new Button(size,size,"La",purple).pos(12*size,buttonY).tap(()=>{
+        
+        if(event.ctrlKey){
+            count -= step;
+        }
+        
+        //play the sound when the button is pressed
+         var audio = new Audio('A1-[AudioTrimmer.com].wav');
+         audio.play();
+         noteNum.push(13);
+         noteTimes.push(count);
+
+        //play the sound when the outer ring is pressed
+        soundsWritten.push( 
+         new Circle(Rout,purple).pos(count, baseline-12*Rout).tap(()=>{
+            var audio = new Audio('A1-[AudioTrimmer.com].wav');
+            audio.play();
+         })
+        );
+
+         //play the sound when the inner ring is pressed or leave out if it is an open string
+         noteCentres.push(
+         new Circle(Rin,purple).pos(count+Rim, baseline+Rim-12*Rout).tap(()=>{
+            var audio = new Audio('A1-[AudioTrimmer.com].wav');
+            audio.play();
+         })
+         );
+
+          //writing the tab notation
+        tabNotation.push(
+            new Button(size,size,"12",purple).pos(count, baseline*1.3 + Rout*0).tap(()=>{
+                var audio = new Audio('A1-[AudioTrimmer.com].wav');
+                audio.play();
+            })
+        ); 
          count += step;
     });
 
