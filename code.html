@@ -10,13 +10,15 @@
 
 import zim from "https://zimjs.org/cdn/02/zim";
 
-let count = 0;
-let step = 110;
-let size = step;  //button size
-let Rout = size/2;
-let Rin = Rout*0.7;
-let Rim = Rout - Rin;
-let buttonY = 0;
+let windowWidth = 1724;  
+let windowHeight = 2268;
+let count = 0;              //  number of active/current note
+let step = 110;             //  distance between notes on music staff
+let size = step;            //  note palette button size
+let Rout = size/2;          //  Outer radius of ring notation on music staff
+let Rin = Rout*0.7;         //  Inner radius of ring notation on music staff
+let Rim = Rout - Rin;       //  Ring thickness of ring notation on music staff  
+let buttonY = 0;            //  Height of the pallette from the top
 let soundsWritten = [];
 let noteCentres = [];
 let tabNotation = [];
@@ -24,175 +26,12 @@ let pianodots = [];
 let noteNum = [];
 let noteTimes = [];
 let audios = [];
-let duration = 6;
+let duration = 6;           //playback speed
 let colourBut = [red, orange, yellow, green, blue, purple, pink];
 let coloursIn = [white, orange, white, green, white, white, pink, red, orange, yellow, green, blue, purple];
 let coloursOut = [red, red, yellow, yellow, blue, purple, purple, purple, purple, purple, purple, purple, purple];
 let solfa = ['Do', 'Re', 'Mi', 'Fa', 'So', 'La', 'Ti'];
-let baseline = 700;
-
-// class Doughnut {
-//     Ro;
-//     Ri;
-//     colourO;
-//     colourI;
-//     soundfile;
-//     toneNum;
-
-//     constructor() {
-//         this.toneNum = noteNum;
-//         this.soundfile = this.toneNum + '-[AudioTrimmer.com].wav';
-//         var audio = new Audio(soundfile);
-//         //audio.play();
-        
-//         soundsWritten.push(
-//             new Circle(this.Ro, this.colourO).pos(count,500).tap(()=>{
-//                 audio.play();
-//             })
-//         );
-//         noteCentres.push(
-//             new Circle(Rin, this.colourIn).pos(count-Rin+Rout, 500+Rim).tap(()=>{
-//                 audio.play();
-//             })
-//         );
-//     }
-// }
-
-// class NoteButton {
-//     //sizeB;
-//     buttNum;
-//     audiof;
-//     label;
-//     buttSize;
-//     symbolSize;
-//     colour;
-//     colourIn;
-//     colourOut;
-    
-
-//     constructor() {
-//         //this.sizeB = size;
-//         //this.audiof = 'C-[AudioTrimmer.com].wav';
-
-//         var arrayNum = this.buttNum - 1;
-
-//         this.buttSize = buttonY;
-//         this.label = solfa[arrayNum];
-//         this.colour = colourBut[arrayNum];
-//         this.colourIn = coloursIn[arrayNum];
-//         this.colourOut = coloursOut[arrayNum];
-//     }
-//     do() {
-//         new Button(size,size,"Do",red).pos(0,buttonY).tap(()=>{
-//             if(event.ctrlKey){
-//                 count -= step;
-//             }
-//             addNoteCentre();
-//             addSoundWritten();
-//         }
-//         var audio = new Audio(audiof);
-//         audio.play();
-//         noteNum.push(buttNum);
-//         audios.push(audiof);
-        
-//         soundsWritten.push(
-//             new Circle(Rout, this.colourOut).pos(count,500).tap(()=>{
-//                 audio.play();
-//             })
-//         );
-
-//         noteCentres.push(
-//             new Circle(Rin, this.colourIn).pos(count-Rin+Rout, 500+Rim).tap(()=>{
-//                 audio.play();
-//             })
-//         );
-                   
-//         count += step;
-
-//     }
-
-//     addNoteCentre() {
-//         soundsWritten.push(
-//             new Circle(Rout, this.colour).pos(count,500).tap(()=>{
-//                 audio.play();
-//             })
-//         );
-//     }
-
-//     addSoundWritten() {
-//         noteCentres.push(
-//             new Circle(Rin, this.colourIn).pos(count-Rin+Rout, 500+Rim).tap(()=>{
-//                 //var audio = new Audio('C-[AudioTrimmer.com].wav');
-//                 audio.play();
-//             })
-//         );
-//     }
-// }
-
-class Symbol{
-    // size;
-    // audio[];
-    // position;
-
-    // constructor () {
-    //     size = 100;
-    //     tones = [1, 3, 5];
-    //     position = [100;200];
-    //     if (noteTone == 1){
-    //         this.audio = new Audio('C-[AudioTrimmer.com].wav');
-    //     }
-    //     if (noteTone == 2){
-    //         var audio = new Audio('D-[AudioTrimmer.com].wav');
-    //     }
-    //     if (noteTone == 3){
-    //         var audio = new Audio('E-[AudioTrimmer.com].wav');
-    //     }
-    //     if (noteTone == 4){
-    //         var audio = new Audio('F-[AudioTrimmer.com].wav');
-    //     }
-    //     if (noteTone == 5){
-    //         var audio = new Audio('G-[AudioTrimmer.com].wav');
-    //     }
-    //     if (noteTone == 6){
-    //         var audio = new Audio('A-[AudioTrimmer.com].wav');
-    //     }
-    //     if (noteTone == 7){
-    //         var audio = new Audio('B-[AudioTrimmer.com].wav');
-    //     }
-    //     if (noteTone == 8){
-    //         var audio = new Audio('C1-[AudioTrimmer.com].wav');
-    //     }
-    //     if (noteTone == 9){
-    //         var audio = new Audio('D1-[AudioTrimmer.com].wav');
-    //     }
-    //     if (noteTone == 10){
-    //         var audio = new Audio('E1-[AudioTrimmer.com].wav');
-    //     }
-    // }
-
-    // play(){
-    //     audio.play();
-    // }
-}
-
-class Block extends Symbol{
-    constructor (count) {
-        super();
-
-        this.sizeB = 100;
-        this.soundB = 'C major-[AudioTrimmer.com].wav';
-
-    }
-    
-}
-
-class NoteButton {
-
-}
-
-class Diagram {
-
-}
+let baseline = 700;         //  Centre of middle C on the music staff
 
 function keydown_space(event) {
 soundsWritten.push(' ');
@@ -209,17 +48,14 @@ function keydwon_backspace(event) {
     noteCentres.pop();
     noteNum.pop();
     noteTimes.pop();
-    //zog(soundsWritten.length);F
 }
 
 // See Docs under Frame for FIT, FILL, FULL, and TAG
-new Frame(FIT, 1724, 2268, light, dark, ready);
+new Frame(FIT, windowWidth, windowHeight, light, dark, ready);
   
 function ready() {
     document.addEventListener('keydown', function (event) {
-
         console.log(`Keydown event fired ${event.key}`);
-
         switch (event.code) {
             case 'Space':
                 keydown_space(event);
@@ -227,55 +63,21 @@ function ready() {
             case 'Backspace':
                 keydwon_backspace();
                 break;
-            // default:
-            // break;
-        }
-        });
-
-    // document.addEventListener('keydown',event => {
-    // if (event.code === 'Space') {
-    //     soundsWritten.push(' ');
-    //     noteNum.push(0);
-    //     count += step;
-    //     }
-    // })
-
-    // document.addEventListener('keydown',event => {
-    // if (event.code === 'Backspace') {
-    //     count -= step;
-    //     const lastItem = soundsWritten[soundsWritten.length - 1]
-    //     const lastCentre = noteCentres[noteCentres.length - 1]
-    //     lastItem.alp(0);
-    //     lastCentre.alp(0);
-    //     soundsWritten.pop();
-    //     noteCentres.pop();
-    //     noteNum.pop();
-        
-    //     }
-    // })
-
-    // const soundsWritten = {
-    //     letter : null
-    //     soundfile: null
-    //     play : function (){
-    //         var audio = new Audio(soundfile);
-    //         audio.play();
-    //     }
-    //     colorR : null
-    //     positionX : null
-    //     positionY : null
-    // } 
+        }      
+    }); 
 
     let counting = 0;
-
     let iCount = 0;
 
-    new Rectangle(1724, 3, black).loc(0, baseline - Rout);
-    new Rectangle(1724, 3, black).loc(0, baseline - Rout*3);
-    new Rectangle(1724, 3, black).loc(0, baseline - Rout*5);
-    new Rectangle(1724, 3, black).loc(0, baseline - Rout*7);
-    new Rectangle(1724, 3, black).loc(0, baseline - Rout*9);
+    //Draw the 5 lines of the music staff
+    let staffLineWidth = 3;
+    new Rectangle(windowWidth, staffLineWidth, black).loc(0, baseline - Rout);
+    new Rectangle(windowWidth, staffLineWidth, black).loc(0, baseline - Rout*3);
+    new Rectangle(windowWidth, staffLineWidth, black).loc(0, baseline - Rout*5);
+    new Rectangle(windowWidth, staffLineWidth, black).loc(0, baseline - Rout*7);
+    new Rectangle(windowWidth, staffLineWidth, black).loc(0, baseline - Rout*9);
 
+    //Draw the 4 lines of the tab notation
     new Rectangle(1724, 3, black).loc(0, baseline*1.3 + Rout);
     new Rectangle(1724, 3, black).loc(0, baseline*1.3 + Rout*3);
     new Rectangle(1724, 3, black).loc(0, baseline*1.3 + Rout*5);
@@ -283,31 +85,31 @@ function ready() {
 
         //Draw piano diagram white notes
     const pianonote1 = new Rectangle(200,400, white).loc(50, 1400);
-        pianonote1.borderColor = black;
-        pianonote1.borderWidth = 5;
+    pianonote1.borderColor = black;
+    pianonote1.borderWidth = 5;
     const pianonote2 = new Rectangle(200,400, white).loc(250, 1400);
-        pianonote2.borderColor = black;
-        pianonote2.borderWidth = 5;
+    pianonote2.borderColor = black;
+    pianonote2.borderWidth = 5;
     const pianonote3 = new Rectangle(200,400, white).loc(450, 1400);
-        pianonote3.borderColor = black;
-        pianonote3.borderWidth = 5;
+    pianonote3.borderColor = black;
+    pianonote3.borderWidth = 5;
     const pianonote4 = new Rectangle(200,400, white).loc(650, 1400);
-        pianonote4.borderColor = black;
-        pianonote4.borderWidth = 5;
+    pianonote4.borderColor = black;
+    pianonote4.borderWidth = 5;
     const pianonote5 = new Rectangle(200,400, white).loc(850, 1400);
-        pianonote5.borderColor = black;
-        pianonote5.borderWidth = 5;
+    pianonote5.borderColor = black;
+    pianonote5.borderWidth = 5;
     const pianonote6 = new Rectangle(200,400, white).loc(1050, 1400);
-        pianonote6.borderColor = black;
-        pianonote6.borderWidth = 5;
+    pianonote6.borderColor = black;
+    pianonote6.borderWidth = 5;
     const pianonote7 = new Rectangle(200,400, white).loc(1250, 1400);
-        pianonote7.borderColor = black;
-        pianonote7.borderWidth = 5;
+    pianonote7.borderColor = black;
+    pianonote7.borderWidth = 5;
 
     //Black notes on the piano
     const pianonote8 = new Rectangle(100,250, black).loc(50+150, 1400);
-        pianonote1.borderColor = black;
-        pianonote1.borderWidth = 5;
+    pianonote1.borderColor = black;
+    pianonote1.borderWidth = 5;
     const pianonote9 = new Rectangle(100,250, black).loc(250+150, 1400);
     const pianonote10 = new Rectangle(100,250, black).loc(650+150, 1400);
     const pianonote11 = new Rectangle(100,250, black).loc(850+150, 1400);
@@ -334,96 +136,73 @@ function ready() {
     new Rectangle(10, 300, black).loc(80+450, 1900);
     new Rectangle(10, 300, black).loc(80+600, 1900);
     
-
-
-
+    //Draw play button
     new Button(200,100,"Play",black).pos(400,800).tap(()=>{
         let j = 0;
-
-        // for (let pos = 0; pos < noteNum.length; pos++) {
-        //     const noteTone = noteNum[pos];
-
         for (let pos = 0; pos < noteTimes.length; pos++) {
             const noteTone = noteNum[pos];
             const noteTime = noteTimes[pos]
+       
+            setTimeout(() => {
+                iCount++;
+                console.log(`Ran Interval ${iCount}`);
 
-        // for (let stepNum = 0; stepNum < (count/step); stepNum++) {
-        //    for (let k = 0; k < noteNum.length; k++){
-                
-        //     var steps = (soundsWritten[k].x)/step;
-           
-        //     if (steps == stepNum) {
+                if (noteTone == 1){
+                    var audio = new Audio('C-[AudioTrimmer.com].wav');
+                    audio.play();
+                    }
+                if (noteTone == 2){
+                    var audio = new Audio('D-[AudioTrimmer.com].wav');
+                    audio.play(); 
+                }
+                if (noteTone == 3){
+                    var audio = new Audio('E-[AudioTrimmer.com].wav');
+                    audio.play(); 
+                }
+                if (noteTone == 4){
+                    var audio = new Audio('F-[AudioTrimmer.com].wav');
+                    audio.play(); 
+                }
+                if (noteTone == 5){
+                    var audio = new Audio('G-[AudioTrimmer.com].wav');
+                    audio.play(); 
+                }
+                if (noteTone == 6){
+                    var audio = new Audio('A-[AudioTrimmer.com].wav');
+                    audio.play(); 
+                }
+                if (noteTone == 7){
+                    var audio = new Audio('B-[AudioTrimmer.com].wav');
+                    audio.play(); 
+                }
+                if (noteTone == 8){
+                    var audio = new Audio('C1-[AudioTrimmer.com].wav');
+                    audio.play(); 
+                }
+                if (noteTone == 9){
+                    var audio = new Audio('D1-[AudioTrimmer.com].wav');
+                    audio.play(); 
+                }
+                if (noteTone == 10){
+                    var audio = new Audio('E1-[AudioTrimmer.com].wav');
+                    audio.play();
+                } 
+                if (noteTone == 11){
+                    var audio = new Audio('F1-[AudioTrimmer.com].wav');
+                    audio.play();
+                }
+                if (noteTone == 12){
+                    var audio = new Audio('G1-[AudioTrimmer.com].wav');
+                    audio.play();
+                } 
+                if (noteTone == 13){
+                    var audio = new Audio('A1-[AudioTrimmer.com].wav');
+                    audio.play();
+                }           
+            }, noteTime*duration); 
 
-        
-        
-        setTimeout(() => {
-            iCount++;
-            console.log(`Ran Interval ${iCount}`);
-            
-            
-            if (noteTone == 1){
-                 var audio = new Audio('C-[AudioTrimmer.com].wav');
-                 audio.play();
-                 }
-            if (noteTone == 2){
-                var audio = new Audio('D-[AudioTrimmer.com].wav');
-                audio.play(); 
-            }
-            if (noteTone == 3){
-                var audio = new Audio('E-[AudioTrimmer.com].wav');
-                audio.play(); 
-            }
-            if (noteTone == 4){
-                var audio = new Audio('F-[AudioTrimmer.com].wav');
-                audio.play(); 
-            }
-            if (noteTone == 5){
-                var audio = new Audio('G-[AudioTrimmer.com].wav');
-                audio.play(); 
-            }
-            if (noteTone == 6){
-                var audio = new Audio('A-[AudioTrimmer.com].wav');
-                audio.play(); 
-            }
-            if (noteTone == 7){
-                var audio = new Audio('B-[AudioTrimmer.com].wav');
-                audio.play(); 
-            }
-            if (noteTone == 8){
-                var audio = new Audio('C1-[AudioTrimmer.com].wav');
-                audio.play(); 
-            }
-            if (noteTone == 9){
-                var audio = new Audio('D1-[AudioTrimmer.com].wav');
-                audio.play(); 
-            }
-            if (noteTone == 10){
-                var audio = new Audio('E1-[AudioTrimmer.com].wav');
-                audio.play();
-            } 
-            if (noteTone == 11){
-                var audio = new Audio('F1-[AudioTrimmer.com].wav');
-                audio.play();
-            }
-            if (noteTone == 12){
-                var audio = new Audio('G1-[AudioTrimmer.com].wav');
-                audio.play();
-            } 
-            if (noteTone == 13){
-                var audio = new Audio('A1-[AudioTrimmer.com].wav');
-                audio.play();
-            } 
-            
-        // }, duration * pos);
-        }, noteTime*duration); 
-
-    //}}
-
-}});
-
-
-
-
+        }
+    });
 
     //create red button
     new Button(size,size,"Do",red).pos(0,buttonY).tap(()=>{
@@ -539,7 +318,6 @@ function ready() {
             count -= step;
         }
 
-        
         //play the sound when the button is pressed
          var audio = new Audio('E-[AudioTrimmer.com].wav');
          audio.play();
@@ -1036,66 +814,6 @@ function ready() {
         ); 
          count += step;
     });
-
-
-    //buttonMi.corner = 50;
-    // new Button(50,50,'Mi',yellow).center().pos(200,100).tap(()=>{
-    //     new Button({height:100, width:100, label:null, backgroundColor:yellow, corner:50}).center().pos(300,500).tap(()=>{
-    //         var audio = new Audio('E-[AudioTrimmer.com].wav');
-    //         audio.play();
-    //     });
-    //     new Circle({radius:25, color:white, percent:100}).pos(325,525).tap(e=>{
-    //     });
-
-    //     var audio = new Audio('E-[AudioTrimmer.com].wav');
-    //     audio.play()
-        
-    // });
-
-    // //const button = new Button(100,100,'Fa',green).center().pos(300,100).tap(()=>{
-    // new Button({height:50, width:50, label:'Fa', backgroundColor:green, corner:25}).center().pos(300,100).tap(()=>{
-    //      var audio = new Audio('F-[AudioTrimmer.com].wav');
-    //      audio.play();
-    // });
-
-    // new Button(100,50,'So',blue).center().pos(400,100).tap(()=>{
-    //      var audio = new Audio('G-[AudioTrimmer.com].wav');
-    //      audio.play();
-    //      new Button({height:100, width:100, label:null, backgroundColor:blue, corner:50}).center().pos(400,500).tap(()=>{
-    //         var audio = new Audio('G-[AudioTrimmer.com].wav');
-    //         audio.play();
-    //      });
-    //      new Circle({radius:25, color:white, percent:100}).pos(425,525).tap(e=>{
-    // });
-    // });
-
-
-    
-
-//     new Button(200,60,"CLICK").center().tap(()=>{
-//         //zog("clicking");
-//         var audio = new Audio('https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3');
-//         audio.play();
-//     });
-
-// // OR add custom label (needed to change label color for instance)
-// var label = new Label({
-//    text:"POWER OPTION",
-//    size:40,
-//    backgroundColor:"violet",
-//    bold:true
-// });
-// new Button({
-//    label:label,
-//    width:390,
-//    height:390,
-//    backgroundColor:"purple",
-//    rollBackgroundColor:"MediumOrchid",
-//    borderWidth:8,
-//    borderColor:"violet",
-//    gradient:.3,
-//    corner:195
-// }).center();
 }
 
 </script>
