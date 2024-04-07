@@ -13,7 +13,7 @@ import zim from "https://zimjs.org/cdn/02/zim";
 let windowWidth = 1724;  
 let windowHeight = 2268;
 let count = 0;              //  number of active/current note
-let step = 110;             //  distance between notes on music staff
+let step = 100;             //  distance between notes on music staff
 let size = step;            //  note palette button size
 let Rout = size/2;          //  Outer radius of ring notation on music staff
 let Rin = Rout*0.7;         //  Inner radius of ring notation on music staff
@@ -32,6 +32,7 @@ let coloursIn = [white, orange, white, green, white, white, pink, red, orange, y
 let coloursOut = [red, red, yellow, yellow, blue, purple, purple, purple, purple, purple, purple, purple, purple];
 let solfa = ['Do', 'Re', 'Mi', 'Fa', 'So', 'La', 'Ti'];
 let baseline = 700;         //  Centre of middle C on the music staff
+let baselineTab = baseline*1.4;     //  top line of the tabs
 
 function keydown_space(event) {
 soundsWritten.push(' ');
@@ -71,73 +72,94 @@ function ready() {
 
     //Draw the 5 lines of the music staff
     let staffLineWidth = 3;
-    new Rectangle(windowWidth, staffLineWidth, black).loc(0, baseline - Rout);
-    new Rectangle(windowWidth, staffLineWidth, black).loc(0, baseline - Rout*3);
-    new Rectangle(windowWidth, staffLineWidth, black).loc(0, baseline - Rout*5);
-    new Rectangle(windowWidth, staffLineWidth, black).loc(0, baseline - Rout*7);
-    new Rectangle(windowWidth, staffLineWidth, black).loc(0, baseline - Rout*9);
+    for (let i = 0; i < 5; i++) {
+        new Rectangle(windowWidth, staffLineWidth, black).loc(0, baseline - Rout*(1 + 2*i));
+    }
 
     //Draw the 4 lines of the tab notation
-    new Rectangle(1724, 3, black).loc(0, baseline*1.3 + Rout);
-    new Rectangle(1724, 3, black).loc(0, baseline*1.3 + Rout*3);
-    new Rectangle(1724, 3, black).loc(0, baseline*1.3 + Rout*5);
-    new Rectangle(1724, 3, black).loc(0, baseline*1.3 + Rout*7);
+    //same line thickness as the music staff
+    for (let i = 0; i < 4; i++) {
+        new Rectangle(windowWidth, staffLineWidth, black).loc(0, baselineTab + Rout*(1 + 2*i));
+    }
 
-        //Draw piano diagram white notes
-    const pianonote1 = new Rectangle(200,400, white).loc(50, 1400);
+    //Draw piano diagram white notes
+    let pianoNoteWidth = 200;
+    let pianoNoteHeight = 400;
+    let pianoDiagramHeight = 1400;   // Starting height of piano notes
+    let pianoDiagramXBuffer = 50;
+
+    // for (let i = 0; i < 7; i++) {
+    //     const pianonote1 = new Rectangle(pianoNoteWidth, pianoNoteHeight, white).loc(50, 1400);
+    //     pianonote1.borderColor = black;
+    //     pianonote1.borderWidth = 5;
+    // }
+
+    const pianonote1 = new Rectangle(pianoNoteWidth, pianoNoteHeight, white).loc(pianoDiagramXBuffer, pianoDiagramHeight);
     pianonote1.borderColor = black;
     pianonote1.borderWidth = 5;
-    const pianonote2 = new Rectangle(200,400, white).loc(250, 1400);
+    const pianonote2 = new Rectangle(pianoNoteWidth, pianoNoteHeight, white).loc(pianoDiagramXBuffer + pianoNoteWidth, pianoDiagramHeight);
     pianonote2.borderColor = black;
     pianonote2.borderWidth = 5;
-    const pianonote3 = new Rectangle(200,400, white).loc(450, 1400);
+    const pianonote3 = new Rectangle(pianoNoteWidth, pianoNoteHeight, white).loc(pianoDiagramXBuffer + pianoNoteWidth*2, pianoDiagramHeight);
     pianonote3.borderColor = black;
     pianonote3.borderWidth = 5;
-    const pianonote4 = new Rectangle(200,400, white).loc(650, 1400);
+    const pianonote4 = new Rectangle(pianoNoteWidth, pianoNoteHeight, white).loc(pianoDiagramXBuffer + pianoNoteWidth*3, pianoDiagramHeight);
     pianonote4.borderColor = black;
     pianonote4.borderWidth = 5;
-    const pianonote5 = new Rectangle(200,400, white).loc(850, 1400);
+    const pianonote5 = new Rectangle(pianoNoteWidth, pianoNoteHeight, white).loc(pianoDiagramXBuffer + pianoNoteWidth*4, pianoDiagramHeight);
     pianonote5.borderColor = black;
     pianonote5.borderWidth = 5;
-    const pianonote6 = new Rectangle(200,400, white).loc(1050, 1400);
+    const pianonote6 = new Rectangle(pianoNoteWidth, pianoNoteHeight, white).loc(pianoDiagramXBuffer + pianoNoteWidth*5, pianoDiagramHeight);
     pianonote6.borderColor = black;
     pianonote6.borderWidth = 5;
-    const pianonote7 = new Rectangle(200,400, white).loc(1250, 1400);
+    const pianonote7 = new Rectangle(pianoNoteWidth, pianoNoteHeight, white).loc(pianoDiagramXBuffer + pianoNoteWidth*6, pianoDiagramHeight);
     pianonote7.borderColor = black;
     pianonote7.borderWidth = 5;
 
     //Black notes on the piano
-    const pianonote8 = new Rectangle(100,250, black).loc(50+150, 1400);
-    pianonote1.borderColor = black;
-    pianonote1.borderWidth = 5;
-    const pianonote9 = new Rectangle(100,250, black).loc(250+150, 1400);
-    const pianonote10 = new Rectangle(100,250, black).loc(650+150, 1400);
-    const pianonote11 = new Rectangle(100,250, black).loc(850+150, 1400);
-    const pianonote12 = new Rectangle(100,250, black).loc(1050+150, 1400);
+    let pianoBlackNoteWidth1 = pianoNoteWidth*3/5;
+    let pianoBlackNoteWidth2 = pianoNoteWidth*4/7;
+    let pianoBlackNoteHeight = 250;
+    const pianonote8 = new Rectangle(pianoBlackNoteWidth1,pianoBlackNoteHeight, black).loc(pianoDiagramXBuffer+pianoBlackNoteWidth1, pianoDiagramHeight);
+    const pianonote9 = new Rectangle(pianoBlackNoteWidth1,pianoBlackNoteHeight, black).loc(pianoDiagramXBuffer+pianoBlackNoteWidth1*3, pianoDiagramHeight);
+    const pianonote10 = new Rectangle(pianoBlackNoteWidth2,pianoBlackNoteHeight, black).loc(pianoDiagramXBuffer+pianoBlackNoteWidth2+3*pianoNoteWidth, pianoDiagramHeight);
+    const pianonote11 = new Rectangle(pianoBlackNoteWidth2,pianoBlackNoteHeight, black).loc(pianoDiagramXBuffer+pianoBlackNoteWidth2*3+3*pianoNoteWidth, pianoDiagramHeight);
+    const pianonote12 = new Rectangle(pianoBlackNoteWidth2,pianoBlackNoteHeight, black).loc(pianoDiagramXBuffer+pianoBlackNoteWidth2*5+3*pianoNoteWidth, pianoDiagramHeight);
 
     //Draw fretboard diagram
     //Draw 4 strings
-    new Rectangle(600, 3, black).loc(80, 1900);
-    new Rectangle(600, 3, black).loc(80, 2000);
-    new Rectangle(600, 3, black).loc(80, 2100);
-    new Rectangle(600, 3, black).loc(80, 2200);
+    let fretboardWidth = 600;
+    let fretboardHeight = 300;
+    let numberOfFrets = 4;
+    let fretWidth = fretboardWidth/numberOfFrets;
+    let fretboardYStart = 1900;
+    let fretboardXStart = 80;
+    let tabLineSpace = size;
+
+    for (let i = 0; i < 4; i++) {
+        new Rectangle(fretboardWidth, staffLineWidth, black).loc(fretboardXStart, fretboardYStart+i*tabLineSpace);
+    }
 
     //Draw nut on fretboard
-    const nut = new Rectangle(30, 300, white).loc(70, 1900);
+    const nutBufferWidth = 10;
+    let nutWidth = 30;
+    let nutBorderWidth = staffLineWidth;
+    const nut = new Rectangle(nutWidth, fretboardHeight, white).loc(fretboardXStart-nutBufferWidth, fretboardYStart);
     nut.borderColor = black;
-    nut.borderWidth = 4;
+    nut.borderWidth = nutBorderWidth;
 
     //Draw frets
-    const fret1 = new Rectangle(10, 300, black).loc(80+150, 1900);
-    //fret1.borderColor = black;
-    //fret1.borderWidth = 2;
-
-    new Rectangle(10, 300, black).loc(80+300, 1900);
-    new Rectangle(10, 300, black).loc(80+450, 1900);
-    new Rectangle(10, 300, black).loc(80+600, 1900);
+    let fretWireWidth = 10;
+    for(let i = 0; i<4; i++){
+        new Rectangle(fretWireWidth, fretboardHeight, black).loc(fretboardXStart+fretWidth*(1+i), fretboardYStart);
+    }
     
     //Draw play button
-    new Button(200,100,"Play",black).pos(400,800).tap(()=>{
+    let playButtonWidth = 200;
+    let playButtonHeigth = 100;
+    let playButtonX1 = 400;
+    let playButtonY1 = 800;
+    new Button(playButtonWidth,playButtonHeigth,"Play",black).pos(playButtonX1,playButtonY1).tap(()=>{
         let j = 0;
         for (let pos = 0; pos < noteTimes.length; pos++) {
             const noteTone = noteNum[pos];
