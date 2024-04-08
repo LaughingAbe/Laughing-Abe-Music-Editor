@@ -33,6 +33,9 @@ let coloursOut = [red, red, yellow, yellow, blue, purple, purple, purple, purple
 let solfa = ['Do', 'Re', 'Mi', 'Fa', 'So', 'La', 'Ti'];
 let baseline = 700;         //  Centre of middle C on the music staff
 let baselineTab = baseline*1.4;     //  top line of the tabs
+let pianoDot1X = 100;               //  centre X of first dot on piano diagram
+let pianoDot1Y = 1670;              //  centre y of first dot on piano diagram
+let markedStringThickness = 20;     //  The string marked on the fretboard diagram
 
 function keydown_space(event) {
 soundsWritten.push(' ');
@@ -87,44 +90,36 @@ function ready() {
     let pianoNoteHeight = 400;
     let pianoDiagramHeight = 1400;   // Starting height of piano notes
     let pianoDiagramXBuffer = 50;
+    const pianoNotes = [];
 
-    // for (let i = 0; i < 7; i++) {
-    //     const pianonote1 = new Rectangle(pianoNoteWidth, pianoNoteHeight, white).loc(50, 1400);
-    //     pianonote1.borderColor = black;
-    //     pianonote1.borderWidth = 5;
-    // }
-
-    const pianonote1 = new Rectangle(pianoNoteWidth, pianoNoteHeight, white).loc(pianoDiagramXBuffer, pianoDiagramHeight);
-    pianonote1.borderColor = black;
-    pianonote1.borderWidth = 5;
-    const pianonote2 = new Rectangle(pianoNoteWidth, pianoNoteHeight, white).loc(pianoDiagramXBuffer + pianoNoteWidth, pianoDiagramHeight);
-    pianonote2.borderColor = black;
-    pianonote2.borderWidth = 5;
-    const pianonote3 = new Rectangle(pianoNoteWidth, pianoNoteHeight, white).loc(pianoDiagramXBuffer + pianoNoteWidth*2, pianoDiagramHeight);
-    pianonote3.borderColor = black;
-    pianonote3.borderWidth = 5;
-    const pianonote4 = new Rectangle(pianoNoteWidth, pianoNoteHeight, white).loc(pianoDiagramXBuffer + pianoNoteWidth*3, pianoDiagramHeight);
-    pianonote4.borderColor = black;
-    pianonote4.borderWidth = 5;
-    const pianonote5 = new Rectangle(pianoNoteWidth, pianoNoteHeight, white).loc(pianoDiagramXBuffer + pianoNoteWidth*4, pianoDiagramHeight);
-    pianonote5.borderColor = black;
-    pianonote5.borderWidth = 5;
-    const pianonote6 = new Rectangle(pianoNoteWidth, pianoNoteHeight, white).loc(pianoDiagramXBuffer + pianoNoteWidth*5, pianoDiagramHeight);
-    pianonote6.borderColor = black;
-    pianonote6.borderWidth = 5;
-    const pianonote7 = new Rectangle(pianoNoteWidth, pianoNoteHeight, white).loc(pianoDiagramXBuffer + pianoNoteWidth*6, pianoDiagramHeight);
-    pianonote7.borderColor = black;
-    pianonote7.borderWidth = 5;
+    for (let i = 0; i < 7; i++) {
+        const pianonote = new Rectangle(pianoNoteWidth, pianoNoteHeight, white)
+                                .loc(pianoDiagramXBuffer + pianoNoteWidth * i, pianoDiagramHeight);
+        pianonote.borderColor = black;
+        pianonote.borderWidth = 5;
+        pianoNotes.push(pianonote);
+    }
 
     //Black notes on the piano
-    let pianoBlackNoteWidth1 = pianoNoteWidth*3/5;
-    let pianoBlackNoteWidth2 = pianoNoteWidth*4/7;
-    let pianoBlackNoteHeight = 250;
-    const pianonote8 = new Rectangle(pianoBlackNoteWidth1,pianoBlackNoteHeight, black).loc(pianoDiagramXBuffer+pianoBlackNoteWidth1, pianoDiagramHeight);
-    const pianonote9 = new Rectangle(pianoBlackNoteWidth1,pianoBlackNoteHeight, black).loc(pianoDiagramXBuffer+pianoBlackNoteWidth1*3, pianoDiagramHeight);
-    const pianonote10 = new Rectangle(pianoBlackNoteWidth2,pianoBlackNoteHeight, black).loc(pianoDiagramXBuffer+pianoBlackNoteWidth2+3*pianoNoteWidth, pianoDiagramHeight);
-    const pianonote11 = new Rectangle(pianoBlackNoteWidth2,pianoBlackNoteHeight, black).loc(pianoDiagramXBuffer+pianoBlackNoteWidth2*3+3*pianoNoteWidth, pianoDiagramHeight);
-    const pianonote12 = new Rectangle(pianoBlackNoteWidth2,pianoBlackNoteHeight, black).loc(pianoDiagramXBuffer+pianoBlackNoteWidth2*5+3*pianoNoteWidth, pianoDiagramHeight);
+    const pianoBlackNoteWidth1 = pianoNoteWidth * 3 / 5;
+    const pianoBlackNoteWidth2 = pianoNoteWidth * 4 / 7;
+    const pianoBlackNoteHeight = 250;
+
+    const pianoBlackNotes = [];
+
+    // First loop for the first two black notes
+    for (let i = 0; i < 2; i++) {
+        const pianonote = new Rectangle(pianoBlackNoteWidth1, pianoBlackNoteHeight, black)
+                                .loc(pianoDiagramXBuffer + pianoBlackNoteWidth1 * (2 * i + 1), pianoDiagramHeight);
+        pianoBlackNotes.push(pianonote);
+    }
+
+    // Second loop for the next three black notes
+    for (let i = 0; i < 3; i++) {
+        const pianonote = new Rectangle(pianoBlackNoteWidth2, pianoBlackNoteHeight, black)
+                                .loc(pianoDiagramXBuffer + pianoBlackNoteWidth2 * (2 * i + 1) + 3 * pianoNoteWidth, pianoDiagramHeight);
+        pianoBlackNotes.push(pianonote);
+    }
 
     //Draw fretboard diagram
     //Draw 4 strings
@@ -135,6 +130,7 @@ function ready() {
     let fretboardYStart = 1900;
     let fretboardXStart = 80;
     let tabLineSpace = size;
+    let fretboardStringX1 = 100;
 
     for (let i = 0; i < 4; i++) {
         new Rectangle(fretboardWidth, staffLineWidth, black).loc(fretboardXStart, fretboardYStart+i*tabLineSpace);
@@ -266,8 +262,6 @@ function ready() {
         ); 
         
         //marking notes on piano
-        let pianoDot1X = 100;
-        let pianoDot1Y = 1670;
         pianodots.push(
             new Circle(Rout, red).pos(pianoDot1X, pianoDot1Y).tap(()=>{
                 var audio = new Audio('C-[AudioTrimmer.com].wav');
@@ -276,7 +270,7 @@ function ready() {
         );
 
         //marking the notes on the fretboard
-        new Rectangle(570, 10, red).loc(110, 2100);
+        new Rectangle(fretboardWidth- nutBufferWidth, markedStringThickness, red).loc(fretboardStringX1, fretboardYStart+2*size - markedStringThickness/2);
 
         count += step;
         
@@ -324,7 +318,7 @@ function ready() {
 
         //marking notes on piano
         pianodots.push(
-            new Circle(Rout, orange).pos(300, 1670).tap(()=>{
+            new Circle(Rout, orange).pos(pianoDot1X+ pianoNoteWidth*1, pianoDot1Y).tap(()=>{
                 var audio = new Audio('D-[AudioTrimmer.com].wav');
                 audio.play();
             })
@@ -376,14 +370,14 @@ function ready() {
         
         //marking notes on piano
         pianodots.push(
-            new Circle(Rout, yellow).pos(500, 1670).tap(()=>{
+            new Circle(Rout, yellow).pos(pianoDot1X+ pianoNoteWidth*2, pianoDot1Y).tap(()=>{
                 var audio = new Audio('E-[AudioTrimmer.com].wav');
                 audio.play();
             })
         );
 
         //marking the notes on the fretboard
-        new Rectangle(570, 10, yellow).loc(110, 2000);
+        new Rectangle(fretboardWidth- nutBufferWidth, markedStringThickness, yellow).loc(fretboardStringX1, fretboardYStart+1*size - markedStringThickness/2);
     
          count += step;
     });
@@ -427,14 +421,14 @@ function ready() {
 
          //marking notes on piano
          pianodots.push(
-            new Circle(Rout, green).pos(700, 1670).tap(()=>{
+            new Circle(Rout, green).pos(pianoDot1X+ pianoNoteWidth*3, pianoDot1Y).tap(()=>{
                 var audio = new Audio('F-[AudioTrimmer.com].wav');
                 audio.play();
             })
         );
 
         //marking the notes on the fretboard
-        new Circle(Rout/2, green).loc(110+50, 2000);
+        new Circle(Rout/2, green).loc(115+size/2, fretboardYStart+size);
 
          count += step;
     });
@@ -478,14 +472,14 @@ function ready() {
 
         //marking notes on piano
         pianodots.push(
-            new Circle(Rout, blue).pos(900, 1670).tap(()=>{
+            new Circle(Rout, blue).pos(pianoDot1X+ pianoNoteWidth*4, pianoDot1Y).tap(()=>{
                 var audio = new Audio('G-[AudioTrimmer.com].wav');
                 audio.play();
             })
         );
 
         //marking the notes on the fretboard
-        new Rectangle(570, 10, blue).loc(110, 2200);
+        new Rectangle(fretboardWidth- nutBufferWidth, markedStringThickness, blue).loc(fretboardStringX1, fretboardYStart+3*size - markedStringThickness/2);
          
          count += step;
     });
@@ -529,14 +523,14 @@ function ready() {
         
         //marking notes on piano
         pianodots.push(
-            new Circle(Rout, purple).pos(1100, 1670).tap(()=>{
+            new Circle(Rout, purple).pos(pianoDot1X+ pianoNoteWidth*5, pianoDot1Y).tap(()=>{
                 var audio = new Audio('A-[AudioTrimmer.com].wav');
                 audio.play();
             })
         );
 
         //marking the notes on the fretboard
-        new Rectangle(570, 10, purple).loc(110, 1900);
+        new Rectangle(fretboardWidth- nutBufferWidth, markedStringThickness, purple).loc(fretboardStringX1, fretboardYStart+0*size - markedStringThickness/2);
 
          count += step;
     });
@@ -580,7 +574,7 @@ function ready() {
 
          //marking notes on piano
          pianodots.push(
-            new Circle(Rout, pink).pos(1300, 1670).tap(()=>{
+            new Circle(Rout, pink).pos(pianoDot1X+ pianoNoteWidth*6, pianoDot1Y).tap(()=>{
                 var audio = new Audio('B-[AudioTrimmer.com].wav');
                 audio.play();
             })
@@ -631,7 +625,7 @@ function ready() {
 
          //marking notes on piano
          pianodots.push(
-            new Circle(Rout, red).pos(1500, 1670).tap(()=>{
+            new Circle(Rout, red).pos(pianoDot1X+ pianoNoteWidth*7, pianoDot1Y).tap(()=>{
                 var audio = new Audio('C1-[AudioTrimmer.com].wav');
                 audio.play();
             })
