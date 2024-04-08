@@ -259,15 +259,17 @@ function ready() {
 
         //writing the tab notation
         tabNotation.push(
-            new Button(size,size,"0",red).pos(count, baseline*1.3 + Rout*4).tap(()=>{
+            new Button(size,size,"0",red).pos(count, baselineTab + Rout*4).tap(()=>{
                 var audio = new Audio('C-[AudioTrimmer.com].wav');
                 audio.play();
             })
         ); 
         
         //marking notes on piano
+        let pianoDot1X = 100;
+        let pianoDot1Y = 1670;
         pianodots.push(
-            new Circle(Rout, red).pos(100, 1670).tap(()=>{
+            new Circle(Rout, red).pos(pianoDot1X, pianoDot1Y).tap(()=>{
                 var audio = new Audio('C-[AudioTrimmer.com].wav');
                 audio.play();
             })
@@ -314,7 +316,7 @@ function ready() {
 
          //writing the tab notation
         tabNotation.push(
-            new Button(size,size,"2",orange).pos(count, baseline*1.3 + Rout*4).tap(()=>{
+            new Button(size,size,"2",orange).pos(count, baselineTab + Rout*4).tap(()=>{
                 var audio = new Audio('D-[AudioTrimmer.com].wav');
                 audio.play();
             })
@@ -366,7 +368,7 @@ function ready() {
 
          //writing the tab notation
         tabNotation.push(
-            new Button(size,size,"0",yellow).pos(count, baseline*1.3 + Rout*2).tap(()=>{
+            new Button(size,size,"0",yellow).pos(count, baselineTab + Rout*2).tap(()=>{
                 var audio = new Audio('E-[AudioTrimmer.com].wav');
                 audio.play();
             })
@@ -417,7 +419,7 @@ function ready() {
 
         //writing the tab notation
         tabNotation.push(
-            new Button(size,size,"1",green).pos(count, baseline*1.3 + Rout*2).tap(()=>{
+            new Button(size,size,"1",green).pos(count, baselineTab + Rout*2).tap(()=>{
                 var audio = new Audio('F-[AudioTrimmer.com].wav');
                 audio.play();
             })
@@ -468,7 +470,7 @@ function ready() {
 
         //writing the tab notation
         tabNotation.push(
-            new Button(size,size,"0",blue).pos(count, baseline*1.3 + Rout*6).tap(()=>{
+            new Button(size,size,"0",blue).pos(count, baselineTab+ Rout*6).tap(()=>{
                 var audio = new Audio('G-[AudioTrimmer.com].wav');
                 audio.play();
             })
@@ -519,7 +521,7 @@ function ready() {
 
         //writing the tab notation
         tabNotation.push(
-            new Button(size,size,"0",purple).pos(count, baseline*1.3 + Rout*0).tap(()=>{
+            new Button(size,size,"0",purple).pos(count, baselineTab + Rout*0).tap(()=>{
                 var audio = new Audio('A-[AudioTrimmer.com].wav');
                 audio.play();
             })
@@ -570,7 +572,7 @@ function ready() {
 
         //writing the tab notation
         tabNotation.push(
-            new Button(size,size,"2",pink).pos(count, baseline*1.3 + Rout*0).tap(()=>{
+            new Button(size,size,"2",pink).pos(count, baselineTab + Rout*0).tap(()=>{
                 var audio = new Audio('B-[AudioTrimmer.com].wav');
                 audio.play();
             })
@@ -621,7 +623,7 @@ function ready() {
 
          //writing the tab notation
         tabNotation.push(
-            new Button(size,size,"3",red).pos(count, baseline*1.3 + Rout*0).tap(()=>{
+            new Button(size,size,"3",red).pos(count, baselineTab + Rout*0).tap(()=>{
                 var audio = new Audio('C1-[AudioTrimmer.com].wav');
                 audio.play();
             })
@@ -672,7 +674,7 @@ function ready() {
 
           //writing the tab notation
         tabNotation.push(
-            new Button(size,size,"5",orange).pos(count, baseline*1.3 + Rout*0).tap(()=>{
+            new Button(size,size,"5",orange).pos(count, baselineTab + Rout*0).tap(()=>{
                 var audio = new Audio('D1-[AudioTrimmer.com].wav');
                 audio.play();
             })
@@ -712,7 +714,7 @@ function ready() {
 
           //writing the tab notation
         tabNotation.push(
-            new Button(size,size,"7",yellow).pos(count, baseline*1.3 + Rout*0).tap(()=>{
+            new Button(size,size,"7",yellow).pos(count, baselineTab + Rout*0).tap(()=>{
                 var audio = new Audio('E1-[AudioTrimmer.com].wav');
                 audio.play();
             })
@@ -751,7 +753,7 @@ function ready() {
 
           //writing the tab notation
         tabNotation.push(
-            new Button(size,size,"8",green).pos(count, baseline*1.3 + Rout*0).tap(()=>{
+            new Button(size,size,"8",green).pos(count, baselineTab + Rout*0).tap(()=>{
                 var audio = new Audio('F1-[AudioTrimmer.com].wav');
                 audio.play();
             })
@@ -790,7 +792,7 @@ function ready() {
 
         //writing the tab notation
         tabNotation.push(
-            new Button(size,size,"10",blue).pos(count, baseline*1.3 + Rout*0).tap(()=>{
+            new Button(size,size,"10",blue).pos(count, baselineTab + Rout*0).tap(()=>{
                 var audio = new Audio('G1-[AudioTrimmer.com].wav');
                 audio.play();
             })
@@ -829,7 +831,7 @@ function ready() {
 
           //writing the tab notation
         tabNotation.push(
-            new Button(size,size,"12",purple).pos(count, baseline*1.3 + Rout*0).tap(()=>{
+            new Button(size,size,"12",purple).pos(count, baselineTab + Rout*0).tap(()=>{
                 var audio = new Audio('A1-[AudioTrimmer.com].wav');
                 audio.play();
             })
