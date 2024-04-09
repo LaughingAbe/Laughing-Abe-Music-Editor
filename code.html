@@ -10,7 +10,7 @@
 
 import zim from "https://zimjs.org/cdn/02/zim";
 
-let windowWidth = 1724;  
+let windowWidth = 3224;  
 let windowHeight = 2268;
 let count = 0;              //  number of active/current note
 let step = 100;             //  distance between notes on music staff
@@ -36,6 +36,7 @@ let baselineTab = baseline*1.4;     //  top line of the tabs
 let pianoDot1X = 100;               //  centre X of first dot on piano diagram
 let pianoDot1Y = 1670;              //  centre y of first dot on piano diagram
 let markedStringThickness = 20;     //  The string marked on the fretboard diagram
+let fretboardDotSize = Rout;
 
 function keydown_space(event) {
 soundsWritten.push(' ');
@@ -92,7 +93,7 @@ function ready() {
     let pianoDiagramXBuffer = 50;
     const pianoNotes = [];
 
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 14; i++) {
         const pianonote = new Rectangle(pianoNoteWidth, pianoNoteHeight, white)
                                 .loc(pianoDiagramXBuffer + pianoNoteWidth * i, pianoDiagramHeight);
         pianonote.borderColor = black;
@@ -121,11 +122,25 @@ function ready() {
         pianoBlackNotes.push(pianonote);
     }
 
+    // Draw the second group of 2 black notes
+    for (let i = 0; i < 2; i++) {
+        const pianonote = new Rectangle(pianoBlackNoteWidth1, pianoBlackNoteHeight, black)
+                                .loc(pianoDiagramXBuffer + pianoBlackNoteWidth1 * (2 * i + 1)+pianoNoteWidth*7, pianoDiagramHeight);
+        pianoBlackNotes.push(pianonote);
+    }
+
+    // Second loop for the next three black notes
+    for (let i = 0; i < 3; i++) {
+        const pianonote = new Rectangle(pianoBlackNoteWidth2, pianoBlackNoteHeight, black)
+                                .loc(pianoDiagramXBuffer + pianoBlackNoteWidth2 * (2 * i + 1) + 3 * pianoNoteWidth+pianoNoteWidth*7, pianoDiagramHeight);
+        pianoBlackNotes.push(pianonote);
+    }
+
     //Draw fretboard diagram
     //Draw 4 strings
-    let fretboardWidth = 600;
+    let fretboardWidth = 600*3;
     let fretboardHeight = 300;
-    let numberOfFrets = 4;
+    let numberOfFrets = 12;
     let fretWidth = fretboardWidth/numberOfFrets;
     let fretboardYStart = 1900;
     let fretboardXStart = 80;
@@ -146,7 +161,7 @@ function ready() {
 
     //Draw frets
     let fretWireWidth = 10;
-    for(let i = 0; i<4; i++){
+    for(let i = 0; i<numberOfFrets; i++){
         new Rectangle(fretWireWidth, fretboardHeight, black).loc(fretboardXStart+fretWidth*(1+i), fretboardYStart);
     }
     
@@ -323,9 +338,10 @@ function ready() {
                 audio.play();
             })
         );
+        
 
         //marking the notes on the fretboard
-        new Circle(Rout/2, orange).loc(110+150+50, 2100);
+        new Circle(fretboardDotSize, orange).loc(85+fretWidth*(1.5), fretboardYStart+2*tabLineSpace);
          count += step;
     });
 
@@ -428,7 +444,8 @@ function ready() {
         );
 
         //marking the notes on the fretboard
-        new Circle(Rout/2, green).loc(115+size/2, fretboardYStart+size);
+        new Circle(fretboardDotSize, green).loc(90+fretWidth*(0.5), fretboardYStart+1*tabLineSpace);
+        //new Circle(Rout/2, green).loc(115+size/2, fretboardYStart+size);
 
          count += step;
     });
@@ -581,7 +598,8 @@ function ready() {
         );
 
         //marking the notes on the fretboard
-        new Circle(Rout/2, pink).loc(110+50+150, 1900);
+        new Circle(fretboardDotSize, pink).loc(85+fretWidth*(1.5), fretboardYStart+0*tabLineSpace);
+        //new Circle(Rout/2, pink).loc(110+50+150, 1900);
 
          count += step;
     });
@@ -632,7 +650,8 @@ function ready() {
         );
 
         //marking the notes on the fretboard
-        new Circle(Rout/2, red).loc(110+50+150+150, 1900);
+        //new Circle(Rout/2, red).loc(110+50+150+150, 1900);
+        new Circle(fretboardDotSize, red).loc(85+fretWidth*(2.5), fretboardYStart+0*tabLineSpace);
 
          count += step;
     });
@@ -672,7 +691,18 @@ function ready() {
                 var audio = new Audio('D1-[AudioTrimmer.com].wav');
                 audio.play();
             })
-        ); 
+        );
+        
+        //marking notes on piano
+        pianodots.push(
+            new Circle(Rout, orange).pos(pianoDot1X+ pianoNoteWidth*8, pianoDot1Y).tap(()=>{
+                var audio = new Audio('D1-[AudioTrimmer.com].wav');
+                audio.play();
+            })
+        );
+
+         //marking the notes on the fretboard
+        new Circle(fretboardDotSize, orange).loc(85+fretWidth*(4.5), fretboardYStart+0*tabLineSpace);
 
          count += step;
     });
@@ -713,6 +743,18 @@ function ready() {
                 audio.play();
             })
         ); 
+
+        //marking notes on piano
+        pianodots.push(
+            new Circle(Rout, yellow).pos(pianoDot1X+ pianoNoteWidth*9, pianoDot1Y).tap(()=>{
+                var audio = new Audio('E1-[AudioTrimmer.com].wav');
+                audio.play();
+            })
+        );
+
+         //marking the notes on the fretboard
+        new Circle(fretboardDotSize, yellow).loc(85+fretWidth*(6.5), fretboardYStart+0*tabLineSpace); 
+
          count += step;
     });
 
@@ -751,8 +793,20 @@ function ready() {
                 var audio = new Audio('F1-[AudioTrimmer.com].wav');
                 audio.play();
             })
-        ); 
-         count += step;
+        );
+
+        //marking notes on piano
+        pianodots.push(
+            new Circle(Rout, green).pos(pianoDot1X+ pianoNoteWidth*10, pianoDot1Y).tap(()=>{
+                var audio = new Audio('F1-[AudioTrimmer.com].wav');
+                audio.play();
+            })
+        );
+
+         //marking the notes on the fretboard
+        new Circle(fretboardDotSize, green).loc(85+fretWidth*(7.5), fretboardYStart+0*tabLineSpace);
+         
+        count += step;
     });
 
     //Create green button that plays the sound when pressed and creates a new note symbol on the canvas
@@ -790,7 +844,19 @@ function ready() {
                 var audio = new Audio('G1-[AudioTrimmer.com].wav');
                 audio.play();
             })
-        ); 
+        );
+        
+        //marking notes on piano
+        pianodots.push(
+            new Circle(Rout, blue).pos(pianoDot1X+ pianoNoteWidth*11, pianoDot1Y).tap(()=>{
+                var audio = new Audio('G1-[AudioTrimmer.com].wav');
+                audio.play();
+            })
+        );
+
+        //marking the notes on the fretboard
+        new Circle(fretboardDotSize, blue).loc(85+fretWidth*(9.5), fretboardYStart+0*tabLineSpace);
+
          count += step;
     });
 
@@ -829,7 +895,19 @@ function ready() {
                 var audio = new Audio('A1-[AudioTrimmer.com].wav');
                 audio.play();
             })
-        ); 
+        );
+
+        //marking notes on piano
+        pianodots.push(
+            new Circle(Rout, purple).pos(pianoDot1X+ pianoNoteWidth*12, pianoDot1Y).tap(()=>{
+                var audio = new Audio('A1-[AudioTrimmer.com].wav');
+                audio.play();
+            })
+        );
+
+        //marking the notes on the fretboard
+        new Circle(fretboardDotSize, purple).loc(85+fretWidth*(11.5), fretboardYStart+0*tabLineSpace);
+
          count += step;
     });
 }
