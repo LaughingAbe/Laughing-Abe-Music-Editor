@@ -35,8 +35,8 @@ let baseline = 700;         //  Centre of middle C on the music staff
 let baselineTab = baseline*1.4;     //  top line of the tabs
 let pianoDot1X = 100;               //  centre X of first dot on piano diagram
 let pianoDot1Y = 1670;              //  centre y of first dot on piano diagram
-let markedStringThickness = 20;     //  The string marked on the fretboard diagram
-let fretboardDotSize = Rout;
+let markedStringThickness = 15;     //  The string marked on the fretboard diagram
+let fretboardDotSize = Rout*0.8;        //  The dots on the fretboard diagram
 
 function keydown_space(event) {
 soundsWritten.push(' ');
@@ -163,34 +163,59 @@ function ready() {
     let fretWireWidth = 10;
     for(let i = 0; i<numberOfFrets; i++){
         new Rectangle(fretWireWidth, fretboardHeight, black).loc(fretboardXStart+fretWidth*(1+i), fretboardYStart);
-    }
-    
-    //Draw play button
+    }   
+
+    //Create play button
     let playButtonWidth = 200;
     let playButtonHeigth = 100;
     let playButtonX1 = 400;
     let playButtonY1 = 800;
+    let lineStart = Rout;
+    let musicLineX = lineStart;
     new Button(playButtonWidth,playButtonHeigth,"Play",black).pos(playButtonX1,playButtonY1).tap(()=>{
+        
+        //      create music time line at it's initial position of the first note 
+        const musicLine = new Rectangle(10, windowHeight, black).loc(musicLineX, 0);
+
+         
+        //     musicLine.loc(musicLineX,0);
+
+        // musicLine.animate({
+        //     props:{scale:2},
+        //     time:2,
+        //     ease:"elasticOut",
+        //     rate:target=>{return 1 + target.ratio*4},
+        //     sequence:0 // turn on per item animation
+        // });
+
+
         let j = 0;
         for (let pos = 0; pos < noteTimes.length; pos++) {
             const noteTone = noteNum[pos];
             const noteTime = noteTimes[pos]
+            
+            musicLine.pos(musicLineX,0);
+            musicLineX = musicLineX+100; 
+            //musicLine.loc((lineStart+pos*size),0);
        
             setTimeout(() => {
                 iCount++;
                 console.log(`Ran Interval ${iCount}`);
+                
 
                 if (noteTone == 1){
                     var audio = new Audio('C-[AudioTrimmer.com].wav');
                     audio.play();
+                    
                     }
                 if (noteTone == 2){
                     var audio = new Audio('D-[AudioTrimmer.com].wav');
-                    audio.play(); 
+                    audio.play();
+                     
                 }
                 if (noteTone == 3){
                     var audio = new Audio('E-[AudioTrimmer.com].wav');
-                    audio.play(); 
+                    audio.play();
                 }
                 if (noteTone == 4){
                     var audio = new Audio('F-[AudioTrimmer.com].wav');
