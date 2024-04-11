@@ -163,104 +163,111 @@ function ready() {
     let fretWireWidth = 10;
     for(let i = 0; i<numberOfFrets; i++){
         new Rectangle(fretWireWidth, fretboardHeight, black).loc(fretboardXStart+fretWidth*(1+i), fretboardYStart);
-    }   
-
+    }
+    
     //Create play button
-    let playButtonWidth = 200;
-    let playButtonHeigth = 100;
-    let playButtonX1 = 400;
-    let playButtonY1 = 800;
-    let lineStart = Rout;
-    let musicLineX = lineStart;
-    new Button(playButtonWidth,playButtonHeigth,"Play",black).pos(playButtonX1,playButtonY1).tap(()=>{
+let playButtonWidth = 200;
+let playButtonHeigth = 100;
+let playButtonX1 = 400;
+let playButtonY1 = 800;
+let lineStart = Rout;
+let musicLineX = lineStart;
+let musicLineY = 0; // Added Y position for the music line
+let intervalID; // Variable to hold the interval ID
+
+new Button(playButtonWidth,playButtonHeigth,"Play",black).pos(playButtonX1,playButtonY1).tap(()=>{
+    
+    //      create music time line at it's initial position of the first note 
+    const musicLine = new Rectangle(10, windowHeight, black).loc(musicLineX, musicLineY);
+    
+    // Start the interval to update the music line's position
+    intervalID = setInterval(() => {
+        musicLine.pos(musicLineX, musicLineY);
+        //new Rectangle(10, windowHeight, yellow).loc(musicLineX, musicLineY);
+        //musicLineX = lineStart + noteTime;
+        musicLineX += 2//100; // Increment X position here
+    }, 3
+); // Set the interval duration to match your note timing
+    
+    //let j = 0;
+    for (let pos = 0; pos < noteTimes.length; pos++) {
+        const noteTone = noteNum[pos];
+        const noteTime = noteTimes[pos];
+
+        // Update musicLineX here before setting the timeout
+        //new Rectangle(10, windowHeight, red).loc(musicLineX, musicLineY);
+        musicLineX = lineStart + noteTime;//*duration;//*duration; //100; // Adjust this value as needed based on your desired speed
+        new Rectangle(10, windowHeight, orange).loc(musicLineX, musicLineY);
         
-        //      create music time line at it's initial position of the first note 
-        const musicLine = new Rectangle(10, windowHeight, black).loc(musicLineX, 0);
-
-         
-        //     musicLine.loc(musicLineX,0);
-
-        // musicLine.animate({
-        //     props:{scale:2},
-        //     time:2,
-        //     ease:"elasticOut",
-        //     rate:target=>{return 1 + target.ratio*4},
-        //     sequence:0 // turn on per item animation
-        // });
-
-
-        let j = 0;
-        for (let pos = 0; pos < noteTimes.length; pos++) {
-            const noteTone = noteNum[pos];
-            const noteTime = noteTimes[pos]
-            
-            musicLine.pos(musicLineX,0);
-            musicLineX = musicLineX+100; 
-            //musicLine.loc((lineStart+pos*size),0);
-       
-            setTimeout(() => {
+        setTimeout(() => {
                 iCount++;
-                console.log(`Ran Interval ${iCount}`);
-                
+                console.log(`Ran Interval ${iCount}`);              
+                // Your audio playback code here
+                playAudio(noteTone);                          
+            }, noteTime*duration);
+    }
+});
 
-                if (noteTone == 1){
-                    var audio = new Audio('C-[AudioTrimmer.com].wav');
-                    audio.play();
-                    
-                    }
-                if (noteTone == 2){
-                    var audio = new Audio('D-[AudioTrimmer.com].wav');
-                    audio.play();
-                     
-                }
-                if (noteTone == 3){
-                    var audio = new Audio('E-[AudioTrimmer.com].wav');
-                    audio.play();
-                }
-                if (noteTone == 4){
-                    var audio = new Audio('F-[AudioTrimmer.com].wav');
-                    audio.play(); 
-                }
-                if (noteTone == 5){
-                    var audio = new Audio('G-[AudioTrimmer.com].wav');
-                    audio.play(); 
-                }
-                if (noteTone == 6){
-                    var audio = new Audio('A-[AudioTrimmer.com].wav');
-                    audio.play(); 
-                }
-                if (noteTone == 7){
-                    var audio = new Audio('B-[AudioTrimmer.com].wav');
-                    audio.play(); 
-                }
-                if (noteTone == 8){
-                    var audio = new Audio('C1-[AudioTrimmer.com].wav');
-                    audio.play(); 
-                }
-                if (noteTone == 9){
-                    var audio = new Audio('D1-[AudioTrimmer.com].wav');
-                    audio.play(); 
-                }
-                if (noteTone == 10){
-                    var audio = new Audio('E1-[AudioTrimmer.com].wav');
-                    audio.play();
-                } 
-                if (noteTone == 11){
-                    var audio = new Audio('F1-[AudioTrimmer.com].wav');
-                    audio.play();
-                }
-                if (noteTone == 12){
-                    var audio = new Audio('G1-[AudioTrimmer.com].wav');
-                    audio.play();
-                } 
-                if (noteTone == 13){
-                    var audio = new Audio('A1-[AudioTrimmer.com].wav');
-                    audio.play();
-                }           
-            }, noteTime*duration); 
+// Function to stop the interval when needed (optional)
+function stopInterval() {
+    clearInterval(intervalID);
+}
 
-        }
-    });
+// Function to play audio based on note tone
+function playAudio(noteTone) {
+    let audio = new Audio();
+
+    switch (noteTone) {
+        case 1:
+            audio.src = 'C-[AudioTrimmer.com].wav';
+            break;
+        case 2:
+            audio.src = 'D-[AudioTrimmer.com].wav';
+            break;
+        case 3:
+            audio.src = 'E-[AudioTrimmer.com].wav';
+            break;
+        case 4:
+            audio.src = 'F-[AudioTrimmer.com].wav';
+            break;
+        case 5:
+            audio.src = 'G-[AudioTrimmer.com].wav';
+            break;
+        case 6:
+            audio.src = 'A-[AudioTrimmer.com].wav';
+            break;
+        case 7:
+            audio.src = 'B-[AudioTrimmer.com].wav';
+            break;
+        case 8:
+            audio.src = 'C1-[AudioTrimmer.com].wav';
+            break;
+        case 9:
+            audio.src = 'D1-[AudioTrimmer.com].wav';
+            break;
+        case 10:
+            audio.src = 'E1-[AudioTrimmer.com].wav';
+            break;
+        case 11:
+            audio.src = 'F1-[AudioTrimmer.com].wav';
+            break;
+        case 12:
+            audio.src = 'G1-[AudioTrimmer.com].wav';
+            break;
+        case 13:
+            audio.src = 'A1-[AudioTrimmer.com].wav';
+            break;
+        // Add cases for other note tones
+        default:
+            // Handle unknown note tones
+            break;
+    }
+
+    audio.play();
+}
+
+
+   
 
     //create red button
     new Button(size,size,"Do",red).pos(0,buttonY).tap(()=>{
