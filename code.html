@@ -37,7 +37,7 @@ let pianoDot1X = 100;               //  centre X of first dot on piano diagram
 let pianoDot1Y = 1670;              //  centre y of first dot on piano diagram
 let markedStringThickness = 15;     //  The string marked on the fretboard diagram
 let fretboardDotSize = Rout*0.8;        //  The dots on the fretboard diagram
-let lineStart = Rout;
+let lineStart = 0;//Rout;
 let musicLineX = lineStart;
 let musicLineY = 0; // Added Y position for the music line
 let intervalID; // Variable to hold the interval ID
@@ -190,17 +190,48 @@ function ready() {
     let fretWireWidth = 10;
     for(let i = 0; i<numberOfFrets; i++){
         new Rectangle(fretWireWidth, fretboardHeight, black).loc(fretboardXStart+fretWidth*(1+i), fretboardYStart);
-    }
+    }    
     
-    //Create play button
+
+    function explodeNote(note) {
+        // Animate the explosion effect directly on the note (Circle) object
+        note.animate({
+            props: { scaleX: 2, scaleY: 2, alpha: 0 }, // Scale up and fade out
+            time: 0.5, // Duration of the animation in seconds
+            loop: false, // Play the animation only once
+            rewind: false, // Do not rewind the animation after it finishes
+            call: () => {
+                // Remove the note from the stage after the explosion animation
+                note.removeFrom(stage);
+            }
+        });
+    }
+
+// function explodeNote(note) {
+//     // Get the note's display object (assuming it's a ZIM Rectangle or similar)
+//     const noteDisplayObject = note.noteData.displayObject;
+
+//     // Animate the explosion effect
+//     noteDisplayObject.animate({
+//         props: { scaleX: 2, scaleY: 2, alpha: 0 }, // Scale up and fade out
+//         time: 0.5, // Duration of the animation in seconds
+//         loop: false, // Play the animation only once
+//         rewind: false, // Do not rewind the animation after it finishes
+//         call: () => {
+//             // Remove the note from the stage after the explosion animation
+//             noteDisplayObject.removeFrom(stage);
+//         }
+//     });
+// }
+
+//Create play button 
 let playButtonWidth = 200;
 let playButtonHeigth = 100;
 let playButtonX1 = 400;
 let playButtonY1 = 800;
 
-
 new Button(playButtonWidth,playButtonHeigth,"Play",black).pos(playButtonX1,playButtonY1).tap(()=>{
-    
+ 
     //      create music time line at it's initial position of the first note 
     //const musicLine = new Rectangle(10, windowHeight, black).loc(musicLineX, musicLineY);
     //stage.update();
@@ -209,6 +240,7 @@ new Button(playButtonWidth,playButtonHeigth,"Play",black).pos(playButtonX1,playB
     intervalID = setInterval(() => {
         if (musicLineX == lineStart){
             playAudio(noteNum[0]);
+            explodeNote(soundsWritten[0]);
         }
         musicLine.pos(musicLineX, musicLineY);
         //new Rectangle(10, windowHeight, yellow).loc(musicLineX, musicLineY);
@@ -224,6 +256,8 @@ new Button(playButtonWidth,playButtonHeigth,"Play",black).pos(playButtonX1,playB
         let posnum = (musicLineX-lineStart)/size;
         if ((musicLineX-lineStart)%(size) == 0){
             playAudio(noteNum[posnum]);
+            explodeNote(soundsWritten[posnum]);
+            
         }
         if ((musicLineX-lineStart)%(20*size) == 0){
             //playAudio(noteNum[posnum]);
