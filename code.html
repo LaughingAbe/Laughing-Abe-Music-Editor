@@ -207,32 +207,50 @@ new Button(playButtonWidth,playButtonHeigth,"Play",black).pos(playButtonX1,playB
     
     // Start the interval to update the music line's position
     intervalID = setInterval(() => {
+        if (musicLineX == lineStart){
+            playAudio(noteNum[0]);
+        }
         musicLine.pos(musicLineX, musicLineY);
         //new Rectangle(10, windowHeight, yellow).loc(musicLineX, musicLineY);
         //musicLineX = lineStart + noteTime;
-        musicLineX += 2.1;//2;//100; // Increment X position here  1.95 worked well for CCCCDDDDEEEEFFFFGGGG
+        musicLineX += 2;//2;//100; // Increment X position here  1.95 worked well for CCCCDDDDEEEEFFFFGGGG
         stage.update();
+        
+        if (musicLineX > windowWidth/2){
+            clearInterval(intervalID);
+        }
+
+        //play the next note as the line passes
+        let posnum = (musicLineX-lineStart)/size;
+        if ((musicLineX-lineStart)%(size) == 0){
+            playAudio(noteNum[posnum]);
+        }
+        if ((musicLineX-lineStart)%(20*size) == 0){
+            //playAudio(noteNum[posnum]);
+            clearInterval(intervalID);  
+        }
+        
     }, 10); // Set the interval duration to match your note timing
     
     //let j = 0;
-    for (let pos = 0; pos < noteTimes.length; pos++) {
-        const noteTone = noteNum[pos];
-        const noteTime = noteTimes[pos];
+    // for (let pos = 0; pos < noteTimes.length; pos++) {
+    //     const noteTone = noteNum[pos];
+    //     const noteTime = noteTimes[pos];
 
-        // Update musicLineX here before setting the timeout
-        //new Rectangle(10, windowHeight, red).loc(musicLineX, musicLineY);
-        //musicLineX = lineStart + noteTime;
-        //stage.update();
-        //*duration;//*duration; //100; // Adjust this value as needed based on your desired speed
-        //new Rectangle(10, windowHeight, orange).loc(musicLineX, musicLineY);
+    //     // Update musicLineX here before setting the timeout
+    //     //new Rectangle(10, windowHeight, red).loc(musicLineX, musicLineY);
+    //     //musicLineX = lineStart + noteTime;
+    //     //stage.update();
+    //     //*duration;//*duration; //100; // Adjust this value as needed based on your desired speed
+    //     //new Rectangle(10, windowHeight, orange).loc(musicLineX, musicLineY);
         
-        setTimeout(() => {
-                iCount++;
-                console.log(`Ran Interval ${iCount}`);              
-                // Your audio playback code here
-                playAudio(noteTone);                          
-            }, noteTime*duration);
-    }
+    //     // setTimeout(() => {
+    //     //         iCount++;
+    //     //         console.log(`Ran Interval ${iCount}`);              
+    //     //         // Your audio playback code here
+    //     //         playAudio(noteTone);                          
+    //     //     }, noteTime*duration);
+    // }
 });
 
 // Function to stop the interval when needed (optional)
