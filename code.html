@@ -37,6 +37,10 @@ let pianoDot1X = 100;               //  centre X of first dot on piano diagram
 let pianoDot1Y = 1670;              //  centre y of first dot on piano diagram
 let markedStringThickness = 15;     //  The string marked on the fretboard diagram
 let fretboardDotSize = Rout*0.8;        //  The dots on the fretboard diagram
+let lineStart = Rout;
+let musicLineX = lineStart;
+let musicLineY = 0; // Added Y position for the music line
+let intervalID; // Variable to hold the interval ID
 
 function keydown_space(event) {
 soundsWritten.push(' ');
@@ -56,9 +60,23 @@ function keydwon_backspace(event) {
 }
 
 // See Docs under Frame for FIT, FILL, FULL, and TAG
-new Frame(FIT, windowWidth, windowHeight, light, dark, ready);
+let frame;
+frame = new Frame(FIT, windowWidth, windowHeight, light, dark, ready);
   
 function ready() {
+    // Create a variable to hold the music line
+    let musicLine;
+    var stage = frame.stage;
+
+    // Create a function to initialize the music line
+    function initMusicLine() {
+        // Create music time line at its initial position of the first note 
+        musicLine = new Rectangle(10, windowHeight, black).loc(musicLineX, musicLineY);
+    }
+
+    // Call the initMusicLine function to initialize the music line
+    initMusicLine();
+
     document.addEventListener('keydown', function (event) {
         console.log(`Keydown event fired ${event.key}`);
         switch (event.code) {
@@ -70,6 +88,15 @@ function ready() {
                 break;
         }      
     }); 
+
+    // Add event listener for tick events (animation loop)
+    frame.on("tick", () => {
+        // Update the position of the music line
+        musicLine.pos(musicLineX, musicLineY);
+        //musicLineX += 1; // Increment X position here
+        // Update the screen
+        stage.update();
+    });
 
     let counting = 0;
     let iCount = 0;
@@ -170,24 +197,22 @@ let playButtonWidth = 200;
 let playButtonHeigth = 100;
 let playButtonX1 = 400;
 let playButtonY1 = 800;
-let lineStart = Rout;
-let musicLineX = lineStart;
-let musicLineY = 0; // Added Y position for the music line
-let intervalID; // Variable to hold the interval ID
+
 
 new Button(playButtonWidth,playButtonHeigth,"Play",black).pos(playButtonX1,playButtonY1).tap(()=>{
     
     //      create music time line at it's initial position of the first note 
-    const musicLine = new Rectangle(10, windowHeight, black).loc(musicLineX, musicLineY);
+    //const musicLine = new Rectangle(10, windowHeight, black).loc(musicLineX, musicLineY);
+    //stage.update();
     
     // Start the interval to update the music line's position
     intervalID = setInterval(() => {
         musicLine.pos(musicLineX, musicLineY);
         //new Rectangle(10, windowHeight, yellow).loc(musicLineX, musicLineY);
         //musicLineX = lineStart + noteTime;
-        musicLineX += 2//100; // Increment X position here
-    }, 3
-); // Set the interval duration to match your note timing
+        musicLineX += 2.1;//2;//100; // Increment X position here  1.95 worked well for CCCCDDDDEEEEFFFFGGGG
+        stage.update();
+    }, 10); // Set the interval duration to match your note timing
     
     //let j = 0;
     for (let pos = 0; pos < noteTimes.length; pos++) {
@@ -196,8 +221,10 @@ new Button(playButtonWidth,playButtonHeigth,"Play",black).pos(playButtonX1,playB
 
         // Update musicLineX here before setting the timeout
         //new Rectangle(10, windowHeight, red).loc(musicLineX, musicLineY);
-        musicLineX = lineStart + noteTime;//*duration;//*duration; //100; // Adjust this value as needed based on your desired speed
-        new Rectangle(10, windowHeight, orange).loc(musicLineX, musicLineY);
+        //musicLineX = lineStart + noteTime;
+        //stage.update();
+        //*duration;//*duration; //100; // Adjust this value as needed based on your desired speed
+        //new Rectangle(10, windowHeight, orange).loc(musicLineX, musicLineY);
         
         setTimeout(() => {
                 iCount++;
@@ -264,6 +291,7 @@ function playAudio(noteTone) {
     }
 
     audio.play();
+    //stage.update();
 }
 
 
