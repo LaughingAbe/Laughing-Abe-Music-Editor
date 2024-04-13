@@ -200,7 +200,7 @@ function ready() {
     function explodeNote(note) {
         // Animate the explosion effect directly on the note (Circle) object
         note.animate({
-            props: { scaleX: 2, scaleY: 2, alpha: 0 }, // Scale up and fade out
+            props: { scaleX: 6, scaleY: 6, alpha: 0 }, // Scale up and fade out
             time: 0.5, // Duration of the animation in seconds
             loop: false, // Play the animation only once
             rewind: false, // Do not rewind the animation after it finishes
@@ -224,6 +224,51 @@ function ready() {
                 noteGroup.removeFrom(stage);
             }
         });
+    }
+
+    //Create a mapping between notesWritten and noteCentres based on X coordinate
+        let noteMap = new Map();
+        soundsWritten.forEach(note => {
+            let x = note.x; // Assuming x-coordinate is stored in x property, adjust as needed
+            if (!noteMap.has(x)) {
+                noteMap.set(x, { soundWritten: note, noteCentre: null });
+            } else {
+                noteMap.get(x).soundWritten = note;
+            }
+        });
+        noteCentres.forEach(note => {
+            let x = note.x; // Assuming x-coordinate is stored in x property, adjust as needed
+            if (!noteMap.has(x)) {
+                noteMap.set(x, { soundWritten: null, noteCentre: note });
+            } else {
+                noteMap.get(x).noteCentre = note;
+            }
+        });
+
+        // Attach click event handler to each note
+        soundsWritten.forEach(note => {
+            note.on("click", () => {
+                explodeNoteAndCounterpart(note);
+            });
+        });
+        noteCentres.forEach(note => {
+            note.on("click", () => {
+                explodeNoteAndCounterpart(note);
+            });
+        });
+
+    // Function to handle explosion effect for a note and its associated counterpart
+    function explodeNoteAndCounterpart(note) {
+        let x = note.x; // Get the x-coordinate of the clicked note
+        if (noteMap.has(x)) {
+            let { soundWritten, noteCentre } = noteMap.get(x);
+            if (soundWritten) {
+                explodeNote(soundWritten);
+            }
+            if (noteCentre) {
+                explodeNote(noteCentre);
+            }
+        }
     }
 
     function fadeOutNote(note) {
@@ -252,6 +297,7 @@ function ready() {
             noteButton.tap(() => {
                 // Call the explodeNote function when the note button is tapped
                 explodeNote(noteButton);
+                //explodeNoteAndCounterpart(noteButton);
             });
         });
 
@@ -259,6 +305,7 @@ function ready() {
             noteButton.tap(() => {
                 // Call the explodeNote function when the note button is tapped
                 explodeNote(noteButton);
+                //explodeNoteAndCounterpart(noteButton);
             });
         });
 
