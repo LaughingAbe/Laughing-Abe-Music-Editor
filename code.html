@@ -4,11 +4,15 @@
 <head>
     <meta charset="utf-8" />
     <title>ZIM - Code Creativity</title>
+    <script src="https://zimjs.org/cdn/2.4.1/createjs.min.js"></script>
+    <script src="https://zimjs.org/cdn/2.4.1/zim.min.js"></script>
 
     <!-- zimjs.com - JavaScript Canvas Framework -->
     <script type=module>
+    
 
 import zim from "https://zimjs.org/cdn/02/zim";
+
 
 let windowWidth = 3224;  
 let windowHeight = 2268;
@@ -44,6 +48,7 @@ let intervalID; // Variable to hold the interval ID
 
 function keydown_space(event) {
 soundsWritten.push(' ');
+noteCentres.push(' ');
 noteNum.push(0);
 count += step;
 }
@@ -60,8 +65,8 @@ function keydwon_backspace(event) {
 }
 
 // See Docs under Frame for FIT, FILL, FULL, and TAG
-let frame;
-frame = new Frame(FIT, windowWidth, windowHeight, light, dark, ready);
+let frame = new Frame(FIT, windowWidth, windowHeight, light, dark, ready);
+let stage = frame.stage;
   
 function ready() {
     // Create a variable to hold the music line
@@ -190,8 +195,7 @@ function ready() {
     let fretWireWidth = 10;
     for(let i = 0; i<numberOfFrets; i++){
         new Rectangle(fretWireWidth, fretboardHeight, black).loc(fretboardXStart+fretWidth*(1+i), fretboardYStart);
-    }    
-    
+    }       
 
     function explodeNote(note) {
         // Animate the explosion effect directly on the note (Circle) object
@@ -207,147 +211,181 @@ function ready() {
         });
     }
 
-// function explodeNote(note) {
-//     // Get the note's display object (assuming it's a ZIM Rectangle or similar)
-//     const noteDisplayObject = note.noteData.displayObject;
+    // Function to handle explosion effect for a note group
+    function explodeNoteGroup(noteGroup) {
+        // Animate the explosion effect on the note group
+        noteGroup.animate({
+            props: { scaleX: 2, scaleY: 2, alpha: 0 }, // Scale up and fade out
+            time: 0.5, // Duration of the animation in seconds
+            loop: false, // Play the animation only once
+            rewind: false, // Do not rewind the animation after it finishes
+            call: () => {
+                // Remove the note group from the stage after the explosion animation
+                noteGroup.removeFrom(stage);
+            }
+        });
+    }
 
-//     // Animate the explosion effect
-//     noteDisplayObject.animate({
-//         props: { scaleX: 2, scaleY: 2, alpha: 0 }, // Scale up and fade out
-//         time: 0.5, // Duration of the animation in seconds
-//         loop: false, // Play the animation only once
-//         rewind: false, // Do not rewind the animation after it finishes
-//         call: () => {
-//             // Remove the note from the stage after the explosion animation
-//             noteDisplayObject.removeFrom(stage);
-//         }
-//     });
-// }
+    function fadeOutNote(note) {
+        // Animate the fade-out effect on the note (Circle) object
+        note.animate({
+            props: { alpha: 0 }, // Fade out
+            time: 1, // Duration of the animation in seconds
+            loop: false, // Play the animation only once
+            rewind: false, // Do not rewind the animation after it finishes
+            call: () => {
+                // Remove the note from the stage after the fade-out animation
+                note.removeFrom(stage);
+            }
+        });
+    }
 
-//Create play button 
-let playButtonWidth = 200;
-let playButtonHeigth = 100;
-let playButtonX1 = 400;
-let playButtonY1 = 800;
+    //Create play button 
+    let playButtonWidth = 200;
+    let playButtonHeigth = 100;
+    let playButtonX1 = 400;
+    let playButtonY1 = 800;
 
-new Button(playButtonWidth,playButtonHeigth,"Play",black).pos(playButtonX1,playButtonY1).tap(()=>{
- 
-    //      create music time line at it's initial position of the first note 
-    //const musicLine = new Rectangle(10, windowHeight, black).loc(musicLineX, musicLineY);
-    //stage.update();
-    
-    // Start the interval to update the music line's position
-    intervalID = setInterval(() => {
-        if (musicLineX == lineStart){
-            playAudio(noteNum[0]);
-            explodeNote(soundsWritten[0]);
-        }
-        musicLine.pos(musicLineX, musicLineY);
-        //new Rectangle(10, windowHeight, yellow).loc(musicLineX, musicLineY);
-        //musicLineX = lineStart + noteTime;
-        musicLineX += 2;//2;//100; // Increment X position here  1.95 worked well for CCCCDDDDEEEEFFFFGGGG
-        stage.update();
+    new Button(playButtonWidth,playButtonHeigth,"Play",black).pos(playButtonX1,playButtonY1).tap(()=>{
+         // Iterate over each note button and attach the explosion effect to its tap event
+        soundsWritten.forEach(noteButton => {
+            noteButton.tap(() => {
+                // Call the explodeNote function when the note button is tapped
+                explodeNote(noteButton);
+            });
+        });
+
+        noteCentres.forEach(noteButton => {
+            noteButton.tap(() => {
+                // Call the explodeNote function when the note button is tapped
+                explodeNote(noteButton);
+            });
+        });
+
         
-        if (musicLineX > windowWidth/2){
+
+        // // Array to hold note groups
+        // let noteGroups = [];
+
+        // // Iterate over each note and create a group containing both the outer and inner rings
+        // for (let i = 0; i < soundsWritten.length; i++) {
+        //     let noteGroup = new Group();
+        //     noteGroup.addChild(soundsWritten[i]); // Add outer ring
+        //     noteGroup.addChild(noteCentres[i]);  // Add inner ring
+        //     noteGroups.push(noteGroup);
+        // }
+
+        // // Iterate over each note group and attach the explosion effect to its tap event
+        // noteGroups.forEach(noteGroup => {
+        //     noteGroup.tap(() => {
+        //         // Call the explodeNoteGroup function when the note group is tapped
+        //         explodeNoteGroup(noteGroup);
+        //     });
+        // });
+    
+        //      create music time line at it's initial position of the first note 
+        //const musicLine = new Rectangle(10, windowHeight, black).loc(musicLineX, musicLineY);
+        //stage.update();
+        
+        // Start the interval to update the music line's position
+        intervalID = setInterval(() => {
+            if (musicLineX == lineStart){
+                playAudio(noteNum[0]);
+                //explodeNote(soundsWritten[0]);
+                //explodeNote(noteCentres[0]);
+                fadeOutNote(soundsWritten[0]);
+                fadeOutNote(noteCentres[0]);
+            }
+
+            musicLine.pos(musicLineX, musicLineY);
+            //new Rectangle(10, windowHeight, yellow).loc(musicLineX, musicLineY);
+            //musicLineX = lineStart + noteTime;
+            musicLineX += 2;//2;//100; // Increment X position here  1.95 worked well for CCCCDDDDEEEEFFFFGGGG
+            stage.update();
+            
+            if (musicLineX > windowWidth){
+                clearInterval(intervalID);
+            }
+
+            //play the next note and let the note explode as the line passes
+            let posnum = (musicLineX-lineStart)/size;
+            
+            if ((musicLineX-lineStart)%(size) == 0){        //if position number is an integer, the line has moved a to the next note
+
+                playAudio(noteNum[posnum]);                 //play note on music staff
+                //explodeNote(soundsWritten[posnum]);         //explode ring of note on music staff
+                //explodeNote(noteCentres[posnum]);           //explode centre of note on music staff
+                fadeOutNote(soundsWritten[posnum]);
+                fadeOutNote(noteCentres[posnum]);
+                
+            }
+            // //if ((musicLineX - wlineStart)%(20*size) == 0){
+            // if (musicLineX > windowWidth/1.1){
+            //     //playAudio(noteNum[posnum]);
+            //     clearInterval(intervalID);  
+            // }
+            
+        }, 10); // Set the interval duration to match your note timing
+        
+        });
+
+        // Function to stop the interval when needed (optional)
+        function stopInterval() {
             clearInterval(intervalID);
         }
 
-        //play the next note as the line passes
-        let posnum = (musicLineX-lineStart)/size;
-        if ((musicLineX-lineStart)%(size) == 0){
-            playAudio(noteNum[posnum]);
-            explodeNote(soundsWritten[posnum]);
-            
+        // Function to play audio based on note tone
+        function playAudio(noteTone) {
+            let audio = new Audio();
+
+            switch (noteTone) {
+                case 1:
+                    audio.src = 'C-[AudioTrimmer.com].wav';
+                    break;
+                case 2:
+                    audio.src = 'D-[AudioTrimmer.com].wav';
+                    break;
+                case 3:
+                    audio.src = 'E-[AudioTrimmer.com].wav';
+                    break;
+                case 4:
+                    audio.src = 'F-[AudioTrimmer.com].wav';
+                    break;
+                case 5:
+                    audio.src = 'G-[AudioTrimmer.com].wav';
+                    break;
+                case 6:
+                    audio.src = 'A-[AudioTrimmer.com].wav';
+                    break;
+                case 7:
+                    audio.src = 'B-[AudioTrimmer.com].wav';
+                    break;
+                case 8:
+                    audio.src = 'C1-[AudioTrimmer.com].wav';
+                    break;
+                case 9:
+                    audio.src = 'D1-[AudioTrimmer.com].wav';
+                    break;
+                case 10:
+                    audio.src = 'E1-[AudioTrimmer.com].wav';
+                    break;
+                case 11:
+                    audio.src = 'F1-[AudioTrimmer.com].wav';
+                    break;
+                case 12:
+                    audio.src = 'G1-[AudioTrimmer.com].wav';
+                    break;
+                case 13:
+                    audio.src = 'A1-[AudioTrimmer.com].wav';
+                    break;
+                // Add cases for other note tones
+                default:
+                    // Handle unknown note tones
+                    break;
+            }
+            audio.play();
+            //stage.update();
         }
-        if ((musicLineX-lineStart)%(20*size) == 0){
-            //playAudio(noteNum[posnum]);
-            clearInterval(intervalID);  
-        }
-        
-    }, 10); // Set the interval duration to match your note timing
-    
-    //let j = 0;
-    // for (let pos = 0; pos < noteTimes.length; pos++) {
-    //     const noteTone = noteNum[pos];
-    //     const noteTime = noteTimes[pos];
-
-    //     // Update musicLineX here before setting the timeout
-    //     //new Rectangle(10, windowHeight, red).loc(musicLineX, musicLineY);
-    //     //musicLineX = lineStart + noteTime;
-    //     //stage.update();
-    //     //*duration;//*duration; //100; // Adjust this value as needed based on your desired speed
-    //     //new Rectangle(10, windowHeight, orange).loc(musicLineX, musicLineY);
-        
-    //     // setTimeout(() => {
-    //     //         iCount++;
-    //     //         console.log(`Ran Interval ${iCount}`);              
-    //     //         // Your audio playback code here
-    //     //         playAudio(noteTone);                          
-    //     //     }, noteTime*duration);
-    // }
-});
-
-// Function to stop the interval when needed (optional)
-function stopInterval() {
-    clearInterval(intervalID);
-}
-
-// Function to play audio based on note tone
-function playAudio(noteTone) {
-    let audio = new Audio();
-
-    switch (noteTone) {
-        case 1:
-            audio.src = 'C-[AudioTrimmer.com].wav';
-            break;
-        case 2:
-            audio.src = 'D-[AudioTrimmer.com].wav';
-            break;
-        case 3:
-            audio.src = 'E-[AudioTrimmer.com].wav';
-            break;
-        case 4:
-            audio.src = 'F-[AudioTrimmer.com].wav';
-            break;
-        case 5:
-            audio.src = 'G-[AudioTrimmer.com].wav';
-            break;
-        case 6:
-            audio.src = 'A-[AudioTrimmer.com].wav';
-            break;
-        case 7:
-            audio.src = 'B-[AudioTrimmer.com].wav';
-            break;
-        case 8:
-            audio.src = 'C1-[AudioTrimmer.com].wav';
-            break;
-        case 9:
-            audio.src = 'D1-[AudioTrimmer.com].wav';
-            break;
-        case 10:
-            audio.src = 'E1-[AudioTrimmer.com].wav';
-            break;
-        case 11:
-            audio.src = 'F1-[AudioTrimmer.com].wav';
-            break;
-        case 12:
-            audio.src = 'G1-[AudioTrimmer.com].wav';
-            break;
-        case 13:
-            audio.src = 'A1-[AudioTrimmer.com].wav';
-            break;
-        // Add cases for other note tones
-        default:
-            // Handle unknown note tones
-            break;
-    }
-
-    audio.play();
-    //stage.update();
-}
-
-
-   
 
     //create red button
     new Button(size,size,"Do",red).pos(0,buttonY).tap(()=>{
