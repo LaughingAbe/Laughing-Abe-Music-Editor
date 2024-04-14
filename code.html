@@ -48,6 +48,7 @@ let musicLineY = 0; // Added Y position for the music line
 let intervalID; // Variable to hold the interval ID
 let scoreTotal = 0;         // Variable for calculating the total score
 
+
 function keydown_space(event) {
 soundsWritten.push(' ');
 noteCentres.push(' ');
@@ -70,6 +71,7 @@ function keydwon_backspace(event) {
 let frame = new Frame(FIT, windowWidth, windowHeight, light, dark, ready);
 let stage = frame.stage;
 
+
 // Define constants for scoring
 const FULL_SCORE_PERCENTAGE = 1; // 100%
 const CLOSE_SCORE_PERCENTAGE = 0.75; // 75%
@@ -89,11 +91,30 @@ function calculateScore(lineX, circleX, width) {
         return FAR_SCORE_PERCENTAGE; // 25% score if the line is outside the circle's radius
     }
 }
-  
+
+// // Create a text object to display the score
+// let scoreText = new Text("Score: 0").pos(20, 20).addTo(stage);
+// let scoreText = new Text("Score: 0");
+// scoreText.x = 400; // Set the x position
+// scoreText.y = 1000; // Set the y position
+//scoreText.addTo(stage); // Add the text object to the stage
+//stage.scoreText = scoreText; // Assign the text object to a property of the stage
+//stage.addChild(scoreText); // Add the text object to the stage
+
+
+
 function ready() {
     // Create a variable to hold the music line
     let musicLine;
     var stage = frame.stage;
+    let scoreText = new Label("Score: 0")
+        .pos(stage.width - 200, 40);
+    console.log("scoreText:", scoreText.text); // Log the scoreText's text
+    
+    
+    //scoreText.x = 400; // Set the x position
+    //scoreText.y = 1000; // Set the y position
+    //stage.addChild(scoreText); // Add the text object to the stage
 
     // Create a function to initialize the music line
     function initMusicLine() {
@@ -292,6 +313,12 @@ function ready() {
             }
         }
     }
+
+    // Function to update the score text
+    function updateScoreTotal(scoreTotal) {
+                        scoreText.text = "Total: " + scoreTotal; // Update the text content with the new score
+                        stage.update();
+                    }
 
     function fadeOutNote(note) {
         // Animate the fade-out effect on the note (Circle) object
@@ -497,6 +524,10 @@ function ready() {
                 console.log("Score Percentage:", scorePercentage);
                 console.log("Score:", score);
                 console.log("Total:", scoreTotal);
+                updateScoreTotal(scoreTotal);
+
+            
+
                 explodeNote(soundsWritten[position]);
                 explodeNote(noteCentres[position]);
                 //teller += 1;
@@ -520,11 +551,12 @@ function ready() {
                 let scorePercentage = calculateScore(musicLineX, circle.x, circleWidth);
                 let score = scorePercentage * 100; // Convert percentage to actual score
                 scoreTotal += score;                //Calculate total score
+                updateScoreTotal(scoreTotal);
 
                 console.log("Score Percentage:", scorePercentage);
                 console.log("Score:", score);
                 console.log("Total:", scoreTotal);
-                
+
                 explodeNote(soundsWritten[position]);
                 explodeNote(noteCentres[position]);
                 //teller += 1;
