@@ -423,34 +423,10 @@ function ready() {
         });
 
         
-
-        // // Array to hold note groups
-        // let noteGroups = [];
-
-        // // Iterate over each note and create a group containing both the outer and inner rings
-        // for (let i = 0; i < soundsWritten.length; i++) {
-        //     let noteGroup = new Group();
-        //     noteGroup.addChild(soundsWritten[i]); // Add outer ring
-        //     noteGroup.addChild(noteCentres[i]);  // Add inner ring
-        //     noteGroups.push(noteGroup);
-        // }
-
-        // // Iterate over each note group and attach the explosion effect to its tap event
-        // noteGroups.forEach(noteGroup => {
-        //     noteGroup.tap(() => {
-        //         // Call the explodeNoteGroup function when the note group is tapped
-        //         explodeNoteGroup(noteGroup);
-        //     });
-        // });
-    
-        //      create music time line at it's initial position of the first note 
-        //const musicLine = new Rectangle(10, windowHeight, black).loc(musicLineX, musicLineY);
-        //stage.update();
-        
         // Start the interval to update the music line's position
         intervalID = setInterval(() => {
             if (musicLineX == lineStart){
-                playAudio(noteNum[0]);
+                //playAudio(noteNum[0]);
                 //explodeNote(soundsWritten[0]);
                 //explodeNote(noteCentres[0]);
                 fadeOutNote(soundsWritten[0]);
@@ -472,18 +448,13 @@ function ready() {
             
             if ((musicLineX-lineStart)%(size) == 0){        //if position number is an integer, the line has moved a to the next note
 
-                playAudio(noteNum[posnum]);                 //play note on music staff
+                //playAudio(noteNum[posnum]);                 //play note on music staff
                 //explodeNote(soundsWritten[posnum]);         //explode ring of note on music staff
                 //explodeNote(noteCentres[posnum]);           //explode centre of note on music staff
                 fadeOutNote(soundsWritten[posnum]);
                 fadeOutNote(noteCentres[posnum]);
                 
             }
-            // //if ((musicLineX - wlineStart)%(20*size) == 0){
-            // if (musicLineX > windowWidth/1.1){
-            //     //playAudio(noteNum[posnum]);
-            //     clearInterval(intervalID);  
-            // }
             
         }, 10); // Set the interval duration to match your note timing
         
@@ -599,7 +570,7 @@ function ready() {
                 explodeNote(soundsWritten[position]);
                 explodeNote(noteCentres[position]);
                 //teller += 1;
-                //audio.play();
+                audio.play();
             })
         );
 
@@ -620,7 +591,8 @@ function ready() {
                 let score = scorePercentage * 100; // Convert percentage to actual score
                 scoreTotal += score;                //Calculate total score
 
-                maximumTotal = maximumTotal + 100;
+                //maximumTotal = maximumTotal + 100;
+                maximumTotal = 100*count;
                 scoreAvarage = scoreTotal / maximumTotal *100;
                 console.log("Maximum:", maximumTotal);
                 console.log("ScoreAvarage:", scoreAvarage);
@@ -635,7 +607,7 @@ function ready() {
                 explodeNote(soundsWritten[position]);
                 explodeNote(noteCentres[position]);
                 //teller += 1;
-                //audio.play();
+                audio.play();
             })
         );
 
