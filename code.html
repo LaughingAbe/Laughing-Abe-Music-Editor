@@ -296,7 +296,12 @@ function ready() {
     let fretWireWidth = 10;
     for(let i = 0; i<numberOfFrets; i++){
         new Rectangle(fretWireWidth, fretboardHeight, black).loc(fretboardXStart+fretWidth*(1+i), fretboardYStart);
-    }       
+    } 
+    
+    // Define arrays to store references to exploded notes and faded out notes
+    let explodedNotes = [];
+    let fadedOutNotes = [];
+
 
     function explodeNote(note) {
         // Animate the explosion effect directly on the note (Circle) object
@@ -308,6 +313,9 @@ function ready() {
             call: () => {
                 // Remove the note from the stage after the explosion animation
                 note.removeFrom(stage);
+                // Add the exploded note to the explodedNotes array
+                explodedNotes.push(note);
+                console.log("Note exploded and stored:", note);
             }
         });
     }
@@ -394,8 +402,47 @@ function ready() {
             call: () => {
                 // Remove the note from the stage after the fade-out animation
                 note.removeFrom(stage);
+                // Add the faded out note to the fadedOutNotes array
+                fadedOutNotes.push(note);
+                console.log("Note faded out and stored:", note);
             }
         });
+    }
+
+    // Function to reset the exploded notes
+    function resetExplodedNotes() {
+        // Iterate over the exploded notes array
+        explodedNotes.forEach(note => {
+            // Reset the scaleX and scaleY properties to their original values
+            note.scaleX = 1;
+            note.scaleY = 1;
+
+            // Add the exploded note back to the stage
+            stage.addChild(note);
+            note.alpha = 1;
+        });
+
+        // Clear the explodedNotes array
+        explodedNotes = [];
+    }
+
+    // Function to reset the faded out notes
+    function resetFadedOutNotes() {
+        // Iterate over the faded out notes array
+        fadedOutNotes.forEach(note => {
+
+            // Reset the scaleX and scaleY properties to their original values
+            note.scaleX = 1;
+            note.scaleY = 1;
+            
+            // Add the faded out note back to the stage
+            stage.addChild(note);
+            // Optionally, reset any properties of the note (position, alpha, etc.)
+            note.alpha = 1; // Reset alpha to make the note visible again
+        });
+
+        // Clear the fadedOutNotes array
+        fadedOutNotes = [];
     }
 
     //Create play button 
@@ -1253,8 +1300,38 @@ function ready() {
 
          count += step;
     });
-}
 
+    // Create a function to reset the game state
+    function resetGameState() {
+        // Stop the interval if it's running
+        clearInterval(intervalID);
+
+        // Reset the music line position
+        musicLineX = lineStart;
+
+        // Reset any other variables or game state as needed
+
+        // Clear any visual effects applied during playback
+        // For example, remove any exploded notes or reset their appearance
+
+        // Update the stage to reflect the reset state
+        stage.update();
+    }
+
+    let resetButtonX = 1000;
+    let resetButtonY = 800;
+    // Create the Reset button
+    new Button(200, 100, "Reset", black)
+        .pos(resetButtonX, resetButtonY)
+        //.center()
+        .tap(() => {
+            // Call the reset function when the Reset button is pressed
+            resetGameState();
+            // Call the functions to reset the exploded notes and faded out notes
+            resetExplodedNotes();
+            resetFadedOutNotes();
+        });
+}
 </script>
     <meta name="viewport" content="width=device-width, user-scalable=no" />
 </head>
