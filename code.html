@@ -47,6 +47,8 @@ let musicLineX = lineStart;
 let musicLineY = 0; // Added Y position for the music line
 let intervalID; // Variable to hold the interval ID
 let scoreTotal = 0;         // Variable for calculating the total score
+let maximumTotal = 0;
+let scoreAvarage = 0;
 
 
 function keydown_space(event) {
@@ -71,6 +73,35 @@ function keydwon_backspace(event) {
 let frame = new Frame(FIT, windowWidth, windowHeight, light, dark, ready);
 let stage = frame.stage;
 
+function showFeedbackMessage(message, color) {
+        // Create a Label with the provided message and color
+        STYLE = {text:message, color:color};
+        let feedbackLabel = new Label()
+            .center(stage); // Center the label on the stage
+            //.regX(feedbackLabel.width / 2) // Set the registration point to the center horizontally
+            //.regY(feedbackLabel.height / 2); // Set the registration point to the center vertically
+         // Calculate the center point of the label
+        let centerX = feedbackLabel.width / 2;
+        let centerY = feedbackLabel.height / 2;
+
+        // Set the registration point to the calculated center
+        feedbackLabel.regX = centerX;
+        feedbackLabel.regY = centerY;
+
+        // Animate the label to grow larger and fade out
+        feedbackLabel.animate({
+            props: { scaleX: 8, scaleY: 8, alpha: 1 }, // Scale up and fade in
+            time: 0.5, // Animation duration in seconds
+            rewind: true, // Reverse the animation (fade out)
+            call: () => {
+                // Remove the label from the stage after the animation
+                feedbackLabel.removeFrom(stage);
+            }
+        });
+    }
+
+    STYLE = {black};
+
 
 // Define constants for scoring
 const FULL_SCORE_PERCENTAGE = 1; // 100%
@@ -80,16 +111,40 @@ const FAR_SCORE_PERCENTAGE = 0.25; // 25%
 // Function to calculate the score based on the distance between the line and the circle
 function calculateScore(lineX, circleX, width) {
     let distance = Math.abs(lineX - circleX); // Calculate the distance between the line and the circle
+    
     let maxDistance = width / 2; // Calculate the maximum distance (half of the width of the circle)
+    console.log('Distance:', distance);
+    console.log('Max Distance:', maxDistance);
 
-    // Determine the percentage of available points to award based on the distance
-    if (distance === 0) {
-        return FULL_SCORE_PERCENTAGE; // 100% score if the line is exactly on the circle
-    } else if (distance <= maxDistance) {
-        return CLOSE_SCORE_PERCENTAGE; // 75% score if the line is within the circle's radius
+    let percentage = (distance / Rout) * 100; // Calculate the percentage relative to the note radius
+
+    // Determine the score based on the percentage
+    if (percentage <= 15) {
+        // Example usage:
+        showFeedbackMessage("Perfect!", "blue");
+        return 1; // 100% score if the percentage is less than or equal to 15%
+    } else if (percentage <= 50) {
+        showFeedbackMessage("Excellent!", "green");
+        return 0.8; // 80% score if the percentage is between 15% and 50%
+    } else if (percentage <= 80) {
+        showFeedbackMessage("Great", "yellow");
+        return 0.5; // 50% score if the percentage is between 50% and 80%
+    } else if (percentage <= 100) {
+        showFeedbackMessage("Nice!", "orange");
+        return 0.2; // 20% score if the percentage is between 80% and 100%
     } else {
-        return FAR_SCORE_PERCENTAGE; // 25% score if the line is outside the circle's radius
+        showFeedbackMessage("Whoopsie!", "Red");
+        return -0.1; // -10% score (penalty) if the percentage is greater than 100%
     }
+
+    // // Determine the percentage of available points to award based on the distance
+    // if (distance === 0) {
+    //     return FULL_SCORE_PERCENTAGE; // 100% score if the line is exactly on the circle
+    // } else if (distance <= maxDistance) {
+    //     return CLOSE_SCORE_PERCENTAGE; // 75% score if the line is within the circle's radius
+    // } else {
+    //     return FAR_SCORE_PERCENTAGE; // 25% score if the line is outside the circle's radius
+    // }
 }
 
 // // Create a text object to display the score
@@ -107,9 +162,12 @@ function ready() {
     // Create a variable to hold the music line
     let musicLine;
     var stage = frame.stage;
-    let scoreText = new Label("Score: 0")
+    let scoreText = new Label("Total Score: 0")
         .pos(stage.width - 200, 40);
     console.log("scoreText:", scoreText.text); // Log the scoreText's text
+    let scoreAvarageText = new Label("Average: 0")
+        .pos(stage.width - 200, 140);
+    console.log("scoreAvarageText:", scoreAvarageText.text); // Log the scoreText's text
     
     
     //scoreText.x = 400; // Set the x position
@@ -316,9 +374,15 @@ function ready() {
 
     // Function to update the score text
     function updateScoreTotal(scoreTotal) {
-                        scoreText.text = "Total: " + scoreTotal; // Update the text content with the new score
-                        stage.update();
-                    }
+        scoreText.text = "Total: " + scoreTotal; // Update the text content with the new score
+        stage.update();
+    }
+
+    // Function to update the score text
+    function updateScoreAverage(scoreAverage) {
+        scoreAvarageText.text = "Average: " + scoreAverage; // Update the text content with the new score
+        stage.update();
+    }
 
     function fadeOutNote(note) {
         // Animate the fade-out effect on the note (Circle) object
@@ -520,12 +584,16 @@ function ready() {
                 let scorePercentage = calculateScore(musicLineX, circle.x, circleWidth);
                 let score = scorePercentage * 100; // Convert percentage to actual score
                 scoreTotal += score;                //Calculate total score
+                maximumTotal = maximumTotal + 100;
+                scoreAvarage = scoreTotal / maximumTotal*100;
+                console.log("Maximum:", maximumTotal);
+                console.log("ScoreAvarage:", scoreAvarage);
 
                 console.log("Score Percentage:", scorePercentage);
                 console.log("Score:", score);
                 console.log("Total:", scoreTotal);
                 updateScoreTotal(scoreTotal);
-
+                updateScoreAverage(scoreAvarage);
             
 
                 explodeNote(soundsWritten[position]);
@@ -551,7 +619,14 @@ function ready() {
                 let scorePercentage = calculateScore(musicLineX, circle.x, circleWidth);
                 let score = scorePercentage * 100; // Convert percentage to actual score
                 scoreTotal += score;                //Calculate total score
+
+                maximumTotal = maximumTotal + 100;
+                scoreAvarage = scoreTotal / maximumTotal *100;
+                console.log("Maximum:", maximumTotal);
+                console.log("ScoreAvarage:", scoreAvarage);
+
                 updateScoreTotal(scoreTotal);
+                updateScoreAverage(scoreAvarage);
 
                 console.log("Score Percentage:", scorePercentage);
                 console.log("Score:", score);
