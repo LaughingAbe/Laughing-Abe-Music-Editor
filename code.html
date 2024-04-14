@@ -20,6 +20,7 @@ let count = 0;              //  number of active/current note
 let step = 100;             //  distance between notes on music staff
 let size = step;            //  note palette button size
 let Rout = size/2;          //  Outer radius of ring notation on music staff
+let circleWidth = Rout*2; // Example width of the circle
 let Rin = Rout*0.7;         //  Inner radius of ring notation on music staff
 let Rim = Rout - Rin;       //  Ring thickness of ring notation on music staff  
 let buttonY = 0;            //  Height of the pallette from the top
@@ -45,6 +46,7 @@ let lineStart = 0;//Rout;
 let musicLineX = lineStart;
 let musicLineY = 0; // Added Y position for the music line
 let intervalID; // Variable to hold the interval ID
+let scoreTotal = 0;         // Variable for calculating the total score
 
 function keydown_space(event) {
 soundsWritten.push(' ');
@@ -67,6 +69,26 @@ function keydwon_backspace(event) {
 // See Docs under Frame for FIT, FILL, FULL, and TAG
 let frame = new Frame(FIT, windowWidth, windowHeight, light, dark, ready);
 let stage = frame.stage;
+
+// Define constants for scoring
+const FULL_SCORE_PERCENTAGE = 1; // 100%
+const CLOSE_SCORE_PERCENTAGE = 0.75; // 75%
+const FAR_SCORE_PERCENTAGE = 0.25; // 25%
+
+// Function to calculate the score based on the distance between the line and the circle
+function calculateScore(lineX, circleX, width) {
+    let distance = Math.abs(lineX - circleX); // Calculate the distance between the line and the circle
+    let maxDistance = width / 2; // Calculate the maximum distance (half of the width of the circle)
+
+    // Determine the percentage of available points to award based on the distance
+    if (distance === 0) {
+        return FULL_SCORE_PERCENTAGE; // 100% score if the line is exactly on the circle
+    } else if (distance <= maxDistance) {
+        return CLOSE_SCORE_PERCENTAGE; // 75% score if the line is within the circle's radius
+    } else {
+        return FAR_SCORE_PERCENTAGE; // 25% score if the line is outside the circle's radius
+    }
+}
   
 function ready() {
     // Create a variable to hold the music line
@@ -450,18 +472,63 @@ function ready() {
         audios.push("'C-[AudioTrimmer.com].wav'");
 
         //play the sound when the outer ring is pressed 
+        //let teller = 0;
         soundsWritten.push(
-            new Circle(Rout, red).pos(count,baseline).tap(()=>{
+            new Circle(Rout, red).pos(count,baseline).tap((event)=>{
+                let circle = event.currentTarget; // Get the ZIM Circle object
+                console.log("Circle object:", circle); // Log the circle object itself
+                console.log("Outer Circle clicked");
+                console.log("Circle X:", circle.x);
+                console.log("Line Start:", lineStart);
+                console.log("Size:", size);
                 var audio = new Audio('C-[AudioTrimmer.com].wav');
-                audio.play();
+                let position = (circle.x - lineStart - Rout)/size;
+                console.log("Position:", position); // Log the position
+                //let position = soundsWritten.indexOf(circle); // Get the index of the clicked circle
+                // Example usage:
+                //let lineX = 500; // Example x-coordinate of the moving line
+                //let circleX = 480; // Example x-coordinate of the circle
+                
+
+                let scorePercentage = calculateScore(musicLineX, circle.x, circleWidth);
+                let score = scorePercentage * 100; // Convert percentage to actual score
+                scoreTotal += score;                //Calculate total score
+
+                console.log("Score Percentage:", scorePercentage);
+                console.log("Score:", score);
+                console.log("Total:", scoreTotal);
+                explodeNote(soundsWritten[position]);
+                explodeNote(noteCentres[position]);
+                //teller += 1;
+                //audio.play();
             })
         );
 
          //play the sound when the inner ring is pressed or leave out if it is an open string
         noteCentres.push(
-            new Circle(Rin, white).pos(count+Rim, baseline+Rim).tap(()=>{
+            new Circle(Rin, white).pos(count+Rim, baseline+Rim).tap((event)=>{
+                let circle = event.currentTarget; // Get the ZIM Circle object
+                console.log("Circle object:", circle); // Log the circle object itself
+                console.log("Inner Circle clicked");
+                console.log("Circle X:", circle.x);
+                console.log("Line Start:", lineStart);
+                console.log("Size:", size);
                 var audio = new Audio('C-[AudioTrimmer.com].wav');
-                audio.play();
+                //let position = noteCentres.indexOf(circle); // Get the index of the clicked circle
+                let position = (circle.x - lineStart - Rout)/size;
+                console.log("Position:", position); // Log the position
+                let scorePercentage = calculateScore(musicLineX, circle.x, circleWidth);
+                let score = scorePercentage * 100; // Convert percentage to actual score
+                scoreTotal += score;                //Calculate total score
+
+                console.log("Score Percentage:", scorePercentage);
+                console.log("Score:", score);
+                console.log("Total:", scoreTotal);
+                
+                explodeNote(soundsWritten[position]);
+                explodeNote(noteCentres[position]);
+                //teller += 1;
+                //audio.play();
             })
         );
 
