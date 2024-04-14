@@ -158,6 +158,7 @@ function calculateScore(lineX, circleX, width) {
 
 
 
+
 function ready() {
     // Create a variable to hold the music line
     let musicLine;
@@ -168,6 +169,82 @@ function ready() {
     let scoreAvarageText = new Label("Average: 0")
         .pos(stage.width - 200, 140);
     console.log("scoreAvarageText:", scoreAvarageText.text); // Log the scoreText's text
+
+    
+
+    // set the position of the listen button
+    let listenButtonX = 1600;
+    let listenButtonY = 800;
+    // Create the Listen button
+    let listenButton = new Button(200, 100, "Listen", black)
+        .pos(listenButtonX, listenButtonY)
+        .addTo(stage);
+
+    // Function to handle the automatic playback
+    function startAutomaticPlayback() {
+        // Disable tapping on the notes
+        console.log(`AutomaticPlayback started`);
+        disableNoteInteraction();
+
+        // Start an interval to play the notes automatically
+        intervalID = setInterval(() => {
+            // Check if the line is at a note position
+            let posnum = Math.floor((musicLineX - lineStart) / size);
+            if (posnum >= 0 && posnum < noteNum.length) {
+                // Play the audio for the note at the current position
+                playAudio(noteNum[posnum]);
+            }
+
+            // Move the music line
+            musicLineX += 2; // Adjust the increment as needed
+
+            // Update the screen
+            stage.update();
+        }, 100); // Adjust the interval duration as needed
+    }
+
+        // Function to disable manual interaction with the notes
+        function disableNoteInteraction() {
+            // Iterate over each note button and remove its tap event listener
+            soundsWritten.forEach(noteButton => {
+                noteButton.removeAllEventListeners('tap');
+            });
+
+            noteCentres.forEach(noteButton => {
+                noteButton.removeAllEventListeners('tap');
+            });
+        }
+
+        // Function to stop the automatic playback
+        function stopAutomaticPlayback() {
+            // Clear the interval
+            clearInterval(intervalID);
+
+            // Enable manual interaction with the notes
+            enableNoteInteraction();
+        }
+
+        // Function to enable manual interaction with the notes
+        function enableNoteInteraction() {
+            // Iterate over each note button and reattach its tap event listener
+            soundsWritten.forEach(noteButton => {
+                noteButton.tap(() => {
+                    explodeNote(noteButton);
+                });
+            });
+
+            noteCentres.forEach(noteButton => {
+                noteButton.tap(() => {
+                    explodeNote(noteButton);
+                });
+            });
+        }
+
+        // Event listener for the Listen button
+        listenButton.on("click", () => {
+            startAutomaticPlayback();
+        });
+
     
     
     //scoreText.x = 400; // Set the x position
@@ -434,7 +511,7 @@ function ready() {
             // Reset the scaleX and scaleY properties to their original values
             note.scaleX = 1;
             note.scaleY = 1;
-            
+
             // Add the faded out note back to the stage
             stage.addChild(note);
             // Optionally, reset any properties of the note (position, alpha, etc.)
@@ -514,6 +591,7 @@ function ready() {
 
         // Function to play audio based on note tone
         function playAudio(noteTone) {
+            console.log('Playing audio for note tone:', noteTone); // Log the note tone being played
             let audio = new Audio();
 
             switch (noteTone) {
@@ -1318,6 +1396,7 @@ function ready() {
         stage.update();
     }
 
+    // set the position of the reset button
     let resetButtonX = 1000;
     let resetButtonY = 800;
     // Create the Reset button
@@ -1331,6 +1410,53 @@ function ready() {
             resetExplodedNotes();
             resetFadedOutNotes();
         });
+
+        function hasDuplicateEventListeners(object) {
+        // Store all event listeners in an array
+        let allEventListeners = object._listeners;
+
+        // Track event listeners that have been encountered
+        let encounteredEventListeners = {};
+
+        // Iterate over each event type
+        for (let eventType in allEventListeners) {
+            if (allEventListeners.hasOwnProperty(eventType)) {
+                // Get the list of event listeners for this event type
+                let listeners = allEventListeners[eventType];
+
+                // Iterate over each event listener
+                listeners.forEach(listener => {
+                    // Get the listener function
+                    let listenerFunction = listener.listener;
+
+                    // Check if this listener function has been encountered before
+                    if (encounteredEventListeners[listenerFunction]) {
+                        // Found a duplicate listener
+                        console.log('Duplicate event listener found:', eventType);
+                        console.log('Listener function:', listenerFunction);
+                        return true; // Indicates that a duplicate was found
+                    }
+
+                    // Mark this listener function as encountered
+                    encounteredEventListeners[listenerFunction] = true;
+                });
+            }
+        }
+
+        // No duplicate event listeners found
+        console.log("No duplicate event listeners found");
+        return false;
+    }
+    // Check for duplicate event listeners on soundsWritten
+    if (hasDuplicateEventListeners(soundsWritten)) {
+        console.log("Duplicate event listeners found on soundsWritten");
+    }
+
+    // Check for duplicate event listeners on noteCentres
+    if (hasDuplicateEventListeners(noteCentres)) {
+        console.log("Duplicate event listeners found on noteCentres");
+    }
+    
 }
 </script>
     <meta name="viewport" content="width=device-width, user-scalable=no" />
