@@ -659,28 +659,16 @@ function ready() {
             new Circle(Rin, white).pos(count+Rim, baseline+Rim).tap((event)=>{
                 let circle = event.currentTarget; // Get the ZIM Circle object
                 var audio = new Audio('C-[AudioTrimmer.com].wav');
-                //let position = noteCentres.indexOf(circle); // Get the index of the clicked circle
                 let position = (circle.x - lineStart - Rout)/size;
                 let scorePercentage = calculateScore(musicLineX, circle.x, circleWidth);
                 let score = scorePercentage * 100; // Convert percentage to actual score
                 scoreTotal += score;                //Calculate total score
-
-                //maximumTotal = maximumTotal + 100;
                 maximumTotal = 100*count;
                 scoreAvarage = scoreTotal / maximumTotal *100;
-                console.log("Maximum:", maximumTotal);
-                console.log("ScoreAvarage:", scoreAvarage);
-
                 updateScoreTotal(scoreTotal);
                 updateScoreAverage(scoreAvarage);
-
-                console.log("Score Percentage:", scorePercentage);
-                console.log("Score:", score);
-                console.log("Total:", scoreTotal);
-
                 explodeNote(soundsWritten[position]);
                 explodeNote(noteCentres[position]);
-                //teller += 1;
                 audio.play();
             })
         );
@@ -726,16 +714,39 @@ function ready() {
 
         //play the sound when the outer ring is pressed 
         soundsWritten.push(
-         new Circle(Rout,red).pos(count, baseline - Rout).tap(()=>{
+         new Circle(Rout,red).pos(count, baseline - Rout).tap((event)=>{
+            let circle = event.currentTarget; // Get the ZIM Circle object
             var audio = new Audio('D-[AudioTrimmer.com].wav');
+            let position = (circle.x - lineStart - Rout)/size;
+                let scorePercentage = calculateScore(musicLineX, circle.x, circleWidth);
+                let score = scorePercentage * 100; // Convert percentage to actual score
+                scoreTotal += score;                //Calculate total score
+                maximumTotal = maximumTotal + 100;
+                scoreAvarage = scoreTotal / maximumTotal*100;
+                updateScoreTotal(scoreTotal);
+                updateScoreAverage(scoreAvarage);
+                explodeNote(soundsWritten[position]);
+                explodeNote(noteCentres[position]);
+                audio.play();
             audio.play();
          })
         );
 
          //play the sound when the inner ring is pressed or leave out if it is an open string
          noteCentres.push(
-           new Circle(Rin,orange).pos(count + Rim, baseline + Rim - Rout).tap(()=>{
+           new Circle(Rin,orange).pos(count + Rim, baseline + Rim - Rout).tap((event)=>{
+                let circle = event.currentTarget; // Get the ZIM Circle object
                 var audio = new Audio('D-[AudioTrimmer.com].wav');
+                let position = (circle.x - lineStart - Rout)/size;
+                let scorePercentage = calculateScore(musicLineX, circle.x, circleWidth);
+                let score = scorePercentage * 100; // Convert percentage to actual score
+                scoreTotal += score;                //Calculate total score
+                maximumTotal = 100*count;
+                scoreAvarage = scoreTotal / maximumTotal *100;
+                updateScoreTotal(scoreTotal);
+                updateScoreAverage(scoreAvarage);
+                explodeNote(soundsWritten[position]);
+                explodeNote(noteCentres[position]);
                 audio.play();
            })
          );
