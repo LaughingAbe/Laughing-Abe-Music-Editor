@@ -136,28 +136,7 @@ function calculateScore(lineX, circleX, width) {
         showFeedbackMessage("Whoopsie!", "Red");
         return -0.1; // -10% score (penalty) if the percentage is greater than 100%
     }
-
-    // // Determine the percentage of available points to award based on the distance
-    // if (distance === 0) {
-    //     return FULL_SCORE_PERCENTAGE; // 100% score if the line is exactly on the circle
-    // } else if (distance <= maxDistance) {
-    //     return CLOSE_SCORE_PERCENTAGE; // 75% score if the line is within the circle's radius
-    // } else {
-    //     return FAR_SCORE_PERCENTAGE; // 25% score if the line is outside the circle's radius
-    // }
 }
-
-// // Create a text object to display the score
-// let scoreText = new Text("Score: 0").pos(20, 20).addTo(stage);
-// let scoreText = new Text("Score: 0");
-// scoreText.x = 400; // Set the x position
-// scoreText.y = 1000; // Set the y position
-//scoreText.addTo(stage); // Add the text object to the stage
-//stage.scoreText = scoreText; // Assign the text object to a property of the stage
-//stage.addChild(scoreText); // Add the text object to the stage
-
-
-
 
 function ready() {
     // Create a variable to hold the music line
@@ -169,8 +148,6 @@ function ready() {
     let scoreAvarageText = new Label("Average: 0")
         .pos(stage.width - 200, 140);
     console.log("scoreAvarageText:", scoreAvarageText.text); // Log the scoreText's text
-
-    
 
     // set the position of the listen button
     let listenButtonX = 1600;
@@ -189,18 +166,21 @@ function ready() {
         // Start an interval to play the notes automatically
         intervalID = setInterval(() => {
             // Check if the line is at a note position
-            let posnum = Math.floor((musicLineX - lineStart) / size);
-            if (posnum >= 0 && posnum < noteNum.length) {
+            let posnum = (musicLineX-lineStart)/size;         //The position of the line by dividing the distance from the start by the distance between notes
+            if ((musicLineX-lineStart)%(size) == 0){            // If the line is at one of the notes
                 // Play the audio for the note at the current position
                 playAudio(noteNum[posnum]);
+                explodeNote(soundsWritten[posnum]);
+                explodeNote(noteCentres[posnum]);
             }
 
             // Move the music line
             musicLineX += 2; // Adjust the increment as needed
+            musicLine.pos(musicLineX, musicLineY);  // Update position of the Line on the screen
 
             // Update the screen
             stage.update();
-        }, 100); // Adjust the interval duration as needed
+        }, 10); // Adjust the interval duration as needed
     }
 
         // Function to disable manual interaction with the notes
@@ -244,12 +224,6 @@ function ready() {
         listenButton.on("click", () => {
             startAutomaticPlayback();
         });
-
-    
-    
-    //scoreText.x = 400; // Set the x position
-    //scoreText.y = 1000; // Set the y position
-    //stage.addChild(scoreText); // Add the text object to the stage
 
     // Create a function to initialize the music line
     function initMusicLine() {
@@ -379,83 +353,84 @@ function ready() {
     let explodedNotes = [];
     let fadedOutNotes = [];
 
-
     function explodeNote(note) {
         // Animate the explosion effect directly on the note (Circle) object
-        note.animate({
-            props: { scaleX: 6, scaleY: 6, alpha: 0 }, // Scale up and fade out
-            time: 0.5, // Duration of the animation in seconds
-            loop: false, // Play the animation only once
-            rewind: false, // Do not rewind the animation after it finishes
-            call: () => {
-                // Remove the note from the stage after the explosion animation
-                note.removeFrom(stage);
-                // Add the exploded note to the explodedNotes array
-                explodedNotes.push(note);
-                console.log("Note exploded and stored:", note);
-            }
-        });
-    }
-
-    // Function to handle explosion effect for a note group
-    function explodeNoteGroup(noteGroup) {
-        // Animate the explosion effect on the note group
-        noteGroup.animate({
-            props: { scaleX: 2, scaleY: 2, alpha: 0 }, // Scale up and fade out
-            time: 0.5, // Duration of the animation in seconds
-            loop: false, // Play the animation only once
-            rewind: false, // Do not rewind the animation after it finishes
-            call: () => {
-                // Remove the note group from the stage after the explosion animation
-                noteGroup.removeFrom(stage);
-            }
-        });
-    }
-
-    //Create a mapping between notesWritten and noteCentres based on X coordinate
-        let noteMap = new Map();
-        soundsWritten.forEach(note => {
-            let x = note.x; // Assuming x-coordinate is stored in x property, adjust as needed
-            if (!noteMap.has(x)) {
-                noteMap.set(x, { soundWritten: note, noteCentre: null });
-            } else {
-                noteMap.get(x).soundWritten = note;
-            }
-        });
-        noteCentres.forEach(note => {
-            let x = note.x; // Assuming x-coordinate is stored in x property, adjust as needed
-            if (!noteMap.has(x)) {
-                noteMap.set(x, { soundWritten: null, noteCentre: note });
-            } else {
-                noteMap.get(x).noteCentre = note;
-            }
-        });
-
-        // Attach click event handler to each note
-        soundsWritten.forEach(note => {
-            note.on("click", () => {
-                explodeNoteAndCounterpart(note);
+        if(note){    
+            note.animate({
+                props: { scaleX: 6, scaleY: 6, alpha: 0 }, // Scale up and fade out
+                time: 0.5, // Duration of the animation in seconds
+                loop: false, // Play the animation only once
+                rewind: false, // Do not rewind the animation after it finishes
+                call: () => {
+                    // Remove the note from the stage after the explosion animation
+                    note.removeFrom(stage);
+                    // Add the exploded note to the explodedNotes array
+                    explodedNotes.push(note);
+                    //console.log("Note exploded and stored:", note);
+                }
             });
-        });
-        noteCentres.forEach(note => {
-            note.on("click", () => {
-                explodeNoteAndCounterpart(note);
-            });
-        });
-
-    // Function to handle explosion effect for a note and its associated counterpart
-    function explodeNoteAndCounterpart(note) {
-        let x = note.x; // Get the x-coordinate of the clicked note
-        if (noteMap.has(x)) {
-            let { soundWritten, noteCentre } = noteMap.get(x);
-            if (soundWritten) {
-                explodeNote(soundWritten);
-            }
-            if (noteCentre) {
-                explodeNote(noteCentre);
-            }
         }
     }
+
+    // // Function to handle explosion effect for a note group
+    // function explodeNoteGroup(noteGroup) {
+    //     // Animate the explosion effect on the note group
+    //     noteGroup.animate({
+    //         props: { scaleX: 2, scaleY: 2, alpha: 0 }, // Scale up and fade out
+    //         time: 0.5, // Duration of the animation in seconds
+    //         loop: false, // Play the animation only once
+    //         rewind: false, // Do not rewind the animation after it finishes
+    //         call: () => {
+    //             // Remove the note group from the stage after the explosion animation
+    //             noteGroup.removeFrom(stage);
+    //         }
+    //     });
+    // }
+
+    // //Create a mapping between notesWritten and noteCentres based on X coordinate
+    //     let noteMap = new Map();
+    //     soundsWritten.forEach(note => {
+    //         let x = note.x; // Assuming x-coordinate is stored in x property, adjust as needed
+    //         if (!noteMap.has(x)) {
+    //             noteMap.set(x, { soundWritten: note, noteCentre: null });
+    //         } else {
+    //             noteMap.get(x).soundWritten = note;
+    //         }
+    //     });
+    //     noteCentres.forEach(note => {
+    //         let x = note.x; // Assuming x-coordinate is stored in x property, adjust as needed
+    //         if (!noteMap.has(x)) {
+    //             noteMap.set(x, { soundWritten: null, noteCentre: note });
+    //         } else {
+    //             noteMap.get(x).noteCentre = note;
+    //         }
+    //     });
+
+    //     // Attach click event handler to each note
+    //     soundsWritten.forEach(note => {
+    //         note.on("click", () => {
+    //             explodeNoteAndCounterpart(note);
+    //         });
+    //     });
+    //     noteCentres.forEach(note => {
+    //         note.on("click", () => {
+    //             explodeNoteAndCounterpart(note);
+    //         });
+    //     });
+
+    // // Function to handle explosion effect for a note and its associated counterpart
+    // function explodeNoteAndCounterpart(note) {
+    //     let x = note.x; // Get the x-coordinate of the clicked note
+    //     if (noteMap.has(x)) {
+    //         let { soundWritten, noteCentre } = noteMap.get(x);
+    //         if (soundWritten) {
+    //             explodeNote(soundWritten);
+    //         }
+    //         if (noteCentre) {
+    //             explodeNote(noteCentre);
+    //         }
+    //     }
+    // }
 
     // Function to update the score text
     function updateScoreTotal(scoreTotal) {
@@ -471,19 +446,21 @@ function ready() {
 
     function fadeOutNote(note) {
         // Animate the fade-out effect on the note (Circle) object
-        note.animate({
-            props: { alpha: 0 }, // Fade out
-            time: 1, // Duration of the animation in seconds
-            loop: false, // Play the animation only once
-            rewind: false, // Do not rewind the animation after it finishes
-            call: () => {
-                // Remove the note from the stage after the fade-out animation
-                note.removeFrom(stage);
-                // Add the faded out note to the fadedOutNotes array
-                fadedOutNotes.push(note);
-                console.log("Note faded out and stored:", note);
-            }
-        });
+        if(note){
+            note.animate({
+                props: { alpha: 0 }, // Fade out
+                time: 1, // Duration of the animation in seconds
+                loop: false, // Play the animation only once
+                rewind: false, // Do not rewind the animation after it finishes
+                call: () => {
+                    // Remove the note from the stage after the fade-out animation
+                    note.removeFrom(stage);
+                    // Add the faded out note to the fadedOutNotes array
+                    fadedOutNotes.push(note);
+                    console.log("Note faded out and stored:", note);
+                }
+            });
+        };
     }
 
     // Function to reset the exploded notes
@@ -568,7 +545,7 @@ function ready() {
             }
 
             //play the next note and let the note explode as the line passes
-            let posnum = (musicLineX-lineStart)/size;
+            let posnum = (musicLineX-lineStart)/size;         //The position of the line by dividing the distance from the start by the distance between notes
             
             if ((musicLineX-lineStart)%(size) == 0){        //if position number is an integer, the line has moved a to the next note
 
@@ -659,42 +636,20 @@ function ready() {
         audios.push("'C-[AudioTrimmer.com].wav'");
 
         //play the sound when the outer ring is pressed 
-        //let teller = 0;
         soundsWritten.push(
             new Circle(Rout, red).pos(count,baseline).tap((event)=>{
                 let circle = event.currentTarget; // Get the ZIM Circle object
-                console.log("Circle object:", circle); // Log the circle object itself
-                console.log("Outer Circle clicked");
-                console.log("Circle X:", circle.x);
-                console.log("Line Start:", lineStart);
-                console.log("Size:", size);
                 var audio = new Audio('C-[AudioTrimmer.com].wav');
                 let position = (circle.x - lineStart - Rout)/size;
-                console.log("Position:", position); // Log the position
-                //let position = soundsWritten.indexOf(circle); // Get the index of the clicked circle
-                // Example usage:
-                //let lineX = 500; // Example x-coordinate of the moving line
-                //let circleX = 480; // Example x-coordinate of the circle
-                
-
                 let scorePercentage = calculateScore(musicLineX, circle.x, circleWidth);
                 let score = scorePercentage * 100; // Convert percentage to actual score
                 scoreTotal += score;                //Calculate total score
                 maximumTotal = maximumTotal + 100;
                 scoreAvarage = scoreTotal / maximumTotal*100;
-                console.log("Maximum:", maximumTotal);
-                console.log("ScoreAvarage:", scoreAvarage);
-
-                console.log("Score Percentage:", scorePercentage);
-                console.log("Score:", score);
-                console.log("Total:", scoreTotal);
                 updateScoreTotal(scoreTotal);
                 updateScoreAverage(scoreAvarage);
-            
-
                 explodeNote(soundsWritten[position]);
                 explodeNote(noteCentres[position]);
-                //teller += 1;
                 audio.play();
             })
         );
@@ -703,15 +658,9 @@ function ready() {
         noteCentres.push(
             new Circle(Rin, white).pos(count+Rim, baseline+Rim).tap((event)=>{
                 let circle = event.currentTarget; // Get the ZIM Circle object
-                console.log("Circle object:", circle); // Log the circle object itself
-                console.log("Inner Circle clicked");
-                console.log("Circle X:", circle.x);
-                console.log("Line Start:", lineStart);
-                console.log("Size:", size);
                 var audio = new Audio('C-[AudioTrimmer.com].wav');
                 //let position = noteCentres.indexOf(circle); // Get the index of the clicked circle
                 let position = (circle.x - lineStart - Rout)/size;
-                console.log("Position:", position); // Log the position
                 let scorePercentage = calculateScore(musicLineX, circle.x, circleWidth);
                 let score = scorePercentage * 100; // Convert percentage to actual score
                 scoreTotal += score;                //Calculate total score
@@ -1386,6 +1335,7 @@ function ready() {
 
         // Reset the music line position
         musicLineX = lineStart;
+        musicLine.pos(musicLineX, musicLineY);  // Update position of the Line on the screen
 
         // Reset any other variables or game state as needed
 
