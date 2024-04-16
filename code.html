@@ -143,11 +143,26 @@ function ready() {
     let musicLine;
     var stage = frame.stage;
     let scoreText = new Label("Total Score: 0")
-        .pos(stage.width - 200, 40);
+        .pos(stage.width - 300, 40);
     console.log("scoreText:", scoreText.text); // Log the scoreText's text
     let scoreAvarageText = new Label("Average: 0")
-        .pos(stage.width - 200, 140);
+        .pos(stage.width - 300, 140);
     console.log("scoreAvarageText:", scoreAvarageText.text); // Log the scoreText's text
+
+    // Create a text object for the countdown
+    let countdownText = new Label({
+        text: "3", // Initial text
+        size: 100, // Font size (adjust as needed)
+        font: "Arial", // Font family
+        color: "black" // Text color
+    })
+        .center() // Position in the center of the stage
+        .addTo(stage); // Add to the stage
+
+    // Function to update the countdown text
+    function updateCountdownText(text) {
+        countdownText.text = text;
+    }
 
     // set the position of the listen button
     let listenButtonX = 1600;
@@ -289,7 +304,6 @@ function ready() {
     const pianoBlackNoteWidth1 = pianoNoteWidth * 3 / 5;
     const pianoBlackNoteWidth2 = pianoNoteWidth * 4 / 7;
     const pianoBlackNoteHeight = 250;
-
     const pianoBlackNotes = [];
 
     // First loop for the first two black notes
@@ -476,43 +490,92 @@ function ready() {
             });
         });
 
+        startCountdown();
+    });
+
+        // Function to start the countdown
+        function startCountdown() {
+            // Start the countdown animation
+            let countdown = 3;
+            let countdownInterval = setInterval(() => {
+                if (countdown > 0) {
+                    // Update the countdown text
+                    updateCountdownText(countdown.toString());
+                    // Animate the countdown text (optional)
+                    countdownText.animate({
+                        props: { scaleX: 2, scaleY: 2 }, // Scale up
+                        time: 0.5, // Duration of the animation in seconds
+                        loop: false, // Play the animation only once
+                        rewind: false // Do not rewind the animation after it finishes
+                    });
+                    countdown--;
+                } else {
+                    // Update the countdown text to "Go!"
+                    updateCountdownText("Go! Click on the notes when the line meet their centres");
+                    // Animate the countdown text (optional)
+                    countdownText.animate({
+                        props: { scaleX: 2, scaleY: 2 }, // Scale up
+                        time: 0.5, // Duration of the animation in seconds
+                        loop: false, // Play the animation only once
+                        rewind: false, // Do not rewind the animation after it finishes
+                        call: () => {
+                            // Perform any additional actions after the countdown finishes
+                            // For example, start moving the line forward
+                            startLineMovement();
+                            // Clear the countdown interval
+                            clearInterval(countdownInterval);
+                            // Remove the countdown text (optional)
+                            countdownText.removeFrom(stage);
+                        }
+                    });
+                }
+                // Center the countdown text
+                countdownText.center(stage);
+            }, 1000); // Interval duration: 1 second (1000 milliseconds) 
+        }                       
         
-        // Start the interval to update the music line's position
-        intervalID = setInterval(() => {
-            if (musicLineX == lineStart){
-                //playAudio(noteNum[0]);
-                //explodeNote(soundsWritten[0]);
-                //explodeNote(noteCentres[0]);
-                fadeOutNote(soundsWritten[0]);
-                fadeOutNote(noteCentres[0]);
-            }
+        function startLineMovement() {
+            // Start the interval to update the music line's position
+            intervalID = setInterval(() => {
+                if (musicLineX == lineStart){
+                    //playAudio(noteNum[0]);
+                    //explodeNote(soundsWritten[0]);
+                    //explodeNote(noteCentres[0]);
+                    fadeOutNote(soundsWritten[0]);
+                    fadeOutNote(noteCentres[0]);
+                }
 
-            musicLine.pos(musicLineX, musicLineY);
-            //new Rectangle(10, windowHeight, yellow).loc(musicLineX, musicLineY);
-            //musicLineX = lineStart + noteTime;
-            musicLineX += 2;//2;//100; // Increment X position here  1.95 worked well for CCCCDDDDEEEEFFFFGGGG
-            stage.update();
-            
-            if (musicLineX > windowWidth){
-                clearInterval(intervalID);
-            }
-
-            //play the next note and let the note explode as the line passes
-            let posnum = (musicLineX-lineStart)/size;         //The position of the line by dividing the distance from the start by the distance between notes
-            
-            if ((musicLineX-lineStart)%(size) == 0){        //if position number is an integer, the line has moved a to the next note
-
-                //playAudio(noteNum[posnum]);                 //play note on music staff
-                //explodeNote(soundsWritten[posnum]);         //explode ring of note on music staff
-                //explodeNote(noteCentres[posnum]);           //explode centre of note on music staff
-                fadeOutNote(soundsWritten[posnum]);
-                fadeOutNote(noteCentres[posnum]);
+                musicLine.pos(musicLineX, musicLineY);
+                //new Rectangle(10, windowHeight, yellow).loc(musicLineX, musicLineY);
+                //musicLineX = lineStart + noteTime;
+                musicLineX += 2;//2;//100; // Increment X position here  1.95 worked well for CCCCDDDDEEEEFFFFGGGG
+                stage.update();
                 
-            }
-            
-        }, 10); // Set the interval duration to match your note timing
+                if (musicLineX > windowWidth){
+                    clearInterval(intervalID);
+                }
+
+                //play the next note and let the note explode as the line passes
+                let posnum = (musicLineX-lineStart)/size;         //The position of the line by dividing the distance from the start by the distance between notes
+                
+                if ((musicLineX-lineStart)%(size) == 0){        //if position number is an integer, the line has moved a to the next note
+
+                    //playAudio(noteNum[posnum]);                 //play note on music staff
+                    //explodeNote(soundsWritten[posnum]);         //explode ring of note on music staff
+                    //explodeNote(noteCentres[posnum]);           //explode centre of note on music staff
+                    fadeOutNote(soundsWritten[posnum]);
+                    fadeOutNote(noteCentres[posnum]);
+                    
+                }
+                
+            }, 10); // Set the interval duration to match your note timing
         
-        });
+        }
+
+        // // Start the countdown when the Play Game button is clicked
+        // playGameButton.on("click", () => {
+        //     startCountdown();
+        // });
 
         // Function to stop the interval when needed (optional)
         function stopInterval() {
